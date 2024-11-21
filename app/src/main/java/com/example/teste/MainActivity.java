@@ -70,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
         // Handle home navigation
     }
     private void navigateToSimulator() {
-        // Handle simulator navigation
+        Intent intent = new Intent(MainActivity.this, ImcCalculatorActivity.class);
+        startActivity(intent);
     }
     private void navigateToHealth() {
         // Handle health navigation

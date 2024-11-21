@@ -41,7 +41,8 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
     }
     private void navigateToSimulator() {
-        // Handle simulator navigation
+        Intent intent = new Intent(ProfileActivity.this, ImcCalculatorActivity.class);
+        startActivity(intent);
     }
     private void navigateToHealth() {
         // Handle health navigation

@@ -15,12 +15,16 @@ public class DBHandler extends SQLiteOpenHelper {
         private String name;
         private String email;
         private String password;
+        private String morada;
+        private String phone;
 
         // Construtor
-        public User(String name, String email, String password) {
+        public User(String name, String email, String morada, String phone){
             this.name = name;
             this.email = email;
-            this.password = password;
+            this.morada = morada;
+            this.phone = phone;
+
         }
 
         // Getters e Setters
@@ -47,6 +51,18 @@ public class DBHandler extends SQLiteOpenHelper {
         public void setPassword(String password) {
             this.password = password;
         }
+        public String getMorada() {
+            return morada;
+        }
+        public void setMorada(String morada) {
+            this.morada = morada;
+        }
+        public String getPhone() {
+            return phone;
+        }
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
     }
 
     // Database name and version
@@ -65,7 +81,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
     private static final String EMAIL = "email";
-    private static final String FULL_NAME = "full_name";
+    private static final String PHONE = "phone";
     private static final String ADDRESS = "address";
     private static final String CREATED_AT = "created_at";
 
@@ -110,7 +126,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + USERNAME + " TEXT UNIQUE NOT NULL, "
                 + PASSWORD + " TEXT NOT NULL, "
                 + EMAIL + " TEXT UNIQUE NOT NULL, "
-                + FULL_NAME + " TEXT, "
+                + PHONE + " TEXT, "
                 + CREATED_AT + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                 + ADDRESS + " TEXT )";
 
@@ -202,6 +218,8 @@ public class DBHandler extends SQLiteOpenHelper {
             int nameIndex = cursor.getColumnIndex("username");
             int emailIndex = cursor.getColumnIndex("email");
             int passwordIndex = cursor.getColumnIndex("password");
+            int moradaIndex = cursor.getColumnIndex("address");
+            int tlmIndex = cursor.getColumnIndex("phone");
 
             // Verifica se as colunas existem antes de aceder
             if (nameIndex == -1 || emailIndex == -1 || passwordIndex == -1) {
@@ -213,8 +231,10 @@ public class DBHandler extends SQLiteOpenHelper {
             String nome = cursor.getString(nameIndex);
             String emailUsuario = cursor.getString(emailIndex);
             String password = cursor.getString(passwordIndex);
+            String morada = cursor.getString(moradaIndex);
+            String phone = cursor.getString(tlmIndex);
 
-            User user = new User(nome, emailUsuario, password);
+            User user = new User(nome, emailUsuario, morada, phone);
             cursor.close();
             db.close();
             return user;
@@ -223,6 +243,33 @@ public class DBHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return null;
+    }
+
+    public User getUserDetails(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE email = ?", new String[]{email});
+
+        int nameIndex = cursor.getColumnIndex("username");
+        int emailIndex = cursor.getColumnIndex("email");
+        int moradaIndex = cursor.getColumnIndex("address");
+        int tlmIndex = cursor.getColumnIndex("phone");
+
+        if (cursor != null && cursor.moveToFirst()) {
+            String nome = cursor.getString(nameIndex);
+            String emailUsuario = cursor.getString(emailIndex);
+            String morada = cursor.getString(moradaIndex);
+            String phone = cursor.getString(tlmIndex);
+
+            User user = new User(nome, emailUsuario, morada, phone);
+            cursor.close();
+
+            db.close();
+            return user;
+        } else {
+            cursor.close();
+            db.close();
+            return null;
+        }
     }
 
 
@@ -236,13 +283,14 @@ public class DBHandler extends SQLiteOpenHelper {
         return isRegistered;
     }
 
-    public void editProfile(String name, String email, String address) {
+    public void editProfile(String name, String email, String address, String phone) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put("FULL_NAME", name);
+        values.put("USERNAME", name);
         values.put("EMAIL", email);
         values.put("ADDRESS", address);
+        values.put("PHONE", phone);
         db.update("users", values, "EMAIL = ?", new String[]{email});
         db.close();
     }

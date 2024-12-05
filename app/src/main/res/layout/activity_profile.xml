@@ -31,9 +31,8 @@
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_back"
-                    android:onClick="finish()"
                     app:tint="#A3D26F"
-                    tools:ignore="OnClick" />
+                    />
 
                 <TextView
                     android:layout_width="0dp"

@@ -1,12 +1,53 @@
 package com.example.teste;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+
+
 public class DBHandler extends SQLiteOpenHelper {
+
+    public static class User {
+        private String name;
+        private String email;
+        private String password;
+
+        // Construtor
+        public User(String name, String email, String password) {
+            this.name = name;
+            this.email = email;
+            this.password = password;
+        }
+
+        // Getters e Setters
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+    }
 
     // Database name and version
     private static final String DB_NAME = "bitebalance";
@@ -58,6 +99,8 @@ public class DBHandler extends SQLiteOpenHelper {
     public DBHandler(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
+
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -150,6 +193,40 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    @SuppressLint("Range")
+    public User getUserByEmail(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE email = ?", new String[]{email});
+
+        if (cursor.moveToFirst()) {
+            int nameIndex = cursor.getColumnIndex("username");
+            int emailIndex = cursor.getColumnIndex("email");
+            int passwordIndex = cursor.getColumnIndex("password");
+
+            // Verifica se as colunas existem antes de aceder
+            if (nameIndex == -1 || emailIndex == -1 || passwordIndex == -1) {
+                cursor.close();
+                db.close();
+                throw new IllegalArgumentException("Column not found in database");
+            }
+
+            String nome = cursor.getString(nameIndex);
+            String emailUsuario = cursor.getString(emailIndex);
+            String password = cursor.getString(passwordIndex);
+
+            User user = new User(nome, emailUsuario, password);
+            cursor.close();
+            db.close();
+            return user;
+        }
+
+        cursor.close();
+        db.close();
+        return null;
+    }
+
+
+
     public boolean isEmailRegistered(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM users WHERE email = ?", new String[]{email});
@@ -169,6 +246,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.update("users", values, "EMAIL = ?", new String[]{email});
         db.close();
     }
+
 
 
 

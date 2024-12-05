@@ -1,6 +1,7 @@
 package com.example.teste;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -37,18 +38,27 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void handleLogin() {
-        String emailPhone = etEmailPhone.getText().toString().trim();
+        String email = etEmailPhone.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
-        if (emailPhone.isEmpty() || password.isEmpty()) {
+        if (email.isEmpty() || password.isEmpty()) {
             Toast.makeText(this, "Por favor, preencha todos os campos.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Verifica se as credenciais são válidas
-        if (dbHandler.validateUserLogin(emailPhone, password)) {
+        if (dbHandler.validateUserLogin(email, password)) {
             Toast.makeText(this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
-            // Navegar para a tela principal ou outra atividade após login bem-sucedido
+            DBHandler.User user = dbHandler.getUserByEmail(email); // Obter os dados do utilizador
+
+            // Guardar os dados no SharedPreferences
+            SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("USER_NAME", user.getName());
+            editor.putString("USER_EMAIL", user.getEmail());
+            editor.putBoolean("IS_LOGGED_IN", true); // Marcar como sessão ativa
+            editor.apply();
+
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish(); // Fecha a tela de login

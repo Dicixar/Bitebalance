@@ -1,12 +1,69 @@
 package com.example.teste;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+
+
 public class DBHandler extends SQLiteOpenHelper {
+
+    public static class User {
+        private String name;
+        private String email;
+        private String password;
+        private String morada;
+        private String phone;
+
+        // Construtor
+        public User(String name, String email, String morada, String phone){
+            this.name = name;
+            this.email = email;
+            this.morada = morada;
+            this.phone = phone;
+
+        }
+
+        // Getters e Setters
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+        public String getMorada() {
+            return morada;
+        }
+        public void setMorada(String morada) {
+            this.morada = morada;
+        }
+        public String getPhone() {
+            return phone;
+        }
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
+    }
 
     // Database name and version
     private static final String DB_NAME = "bitebalance";
@@ -24,7 +81,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
     private static final String EMAIL = "email";
-    private static final String FULL_NAME = "full_name";
+    private static final String PHONE = "phone";
     private static final String ADDRESS = "address";
     private static final String CREATED_AT = "created_at";
 
@@ -59,6 +116,8 @@ public class DBHandler extends SQLiteOpenHelper {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
+
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Create users table
@@ -67,7 +126,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + USERNAME + " TEXT UNIQUE NOT NULL, "
                 + PASSWORD + " TEXT NOT NULL, "
                 + EMAIL + " TEXT UNIQUE NOT NULL, "
-                + FULL_NAME + " TEXT, "
+                + PHONE + " TEXT, "
                 + CREATED_AT + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                 + ADDRESS + " TEXT )";
 
@@ -150,6 +209,71 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    @SuppressLint("Range")
+    public User getUserByEmail(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE email = ?", new String[]{email});
+
+        if (cursor.moveToFirst()) {
+            int nameIndex = cursor.getColumnIndex("username");
+            int emailIndex = cursor.getColumnIndex("email");
+            int passwordIndex = cursor.getColumnIndex("password");
+            int moradaIndex = cursor.getColumnIndex("address");
+            int tlmIndex = cursor.getColumnIndex("phone");
+
+            // Verifica se as colunas existem antes de aceder
+            if (nameIndex == -1 || emailIndex == -1 || passwordIndex == -1) {
+                cursor.close();
+                db.close();
+                throw new IllegalArgumentException("Column not found in database");
+            }
+
+            String nome = cursor.getString(nameIndex);
+            String emailUsuario = cursor.getString(emailIndex);
+            String password = cursor.getString(passwordIndex);
+            String morada = cursor.getString(moradaIndex);
+            String phone = cursor.getString(tlmIndex);
+
+            User user = new User(nome, emailUsuario, morada, phone);
+            cursor.close();
+            db.close();
+            return user;
+        }
+
+        cursor.close();
+        db.close();
+        return null;
+    }
+
+    public User getUserDetails(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE email = ?", new String[]{email});
+
+        int nameIndex = cursor.getColumnIndex("username");
+        int emailIndex = cursor.getColumnIndex("email");
+        int moradaIndex = cursor.getColumnIndex("address");
+        int tlmIndex = cursor.getColumnIndex("phone");
+
+        if (cursor != null && cursor.moveToFirst()) {
+            String nome = cursor.getString(nameIndex);
+            String emailUsuario = cursor.getString(emailIndex);
+            String morada = cursor.getString(moradaIndex);
+            String phone = cursor.getString(tlmIndex);
+
+            User user = new User(nome, emailUsuario, morada, phone);
+            cursor.close();
+
+            db.close();
+            return user;
+        } else {
+            cursor.close();
+            db.close();
+            return null;
+        }
+    }
+
+
+
     public boolean isEmailRegistered(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM users WHERE email = ?", new String[]{email});
@@ -158,6 +282,20 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
         return isRegistered;
     }
+
+    public void editProfile(String name, String email, String address, String phone) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("USERNAME", name);
+        values.put("EMAIL", email);
+        values.put("ADDRESS", address);
+        values.put("PHONE", phone);
+        db.update("users", values, "EMAIL = ?", new String[]{email});
+        db.close();
+    }
+
+
 
 
 }

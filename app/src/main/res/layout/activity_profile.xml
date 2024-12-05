@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF">
@@ -30,7 +31,9 @@
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_back"
-                    android:tint="#A3D26F" />
+                    android:onClick="finish()"
+                    app:tint="#A3D26F"
+                    tools:ignore="OnClick" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -48,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_sign_out"
-                    android:tint="#A3D26F" />
+                    app:tint="#A3D26F" />
             </LinearLayout>
 
             <!-- Imagem de Perfil e Nome -->
@@ -70,7 +73,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Daniel"
+                    android:text="Thiago"
                     android:textSize="20sp"
                     android:textColor="#333333"
                     android:fontFamily="sans-serif-medium"/>
@@ -87,15 +90,12 @@
 
             <!-- Lista de Detalhes do Perfil -->
             <include layout="@layout/item_profile_detail" />
-            <include layout="@layout/item_profile_detail" />
-            <include layout="@layout/item_profile_detail" />
-            <include layout="@layout/item_profile_detail" />
 
             <!-- Seção "Settings" -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="Encomendas"
                 android:textSize="16sp"
                 android:textColor="#888888"
                 android:paddingTop="16dp"

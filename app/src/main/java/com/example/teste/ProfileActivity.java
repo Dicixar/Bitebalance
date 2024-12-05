@@ -6,14 +6,24 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 
 public class ProfileActivity extends AppCompatActivity {
+
+    private ImageButton img1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         setupBottomNavigation();
+
+        img1 = findViewById(R.id.btn_sign_out);
+        img1.setOnClickListener(view -> {
+            logOut();
+        });
+
+
     }
     private void setupBottomNavigation() {
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
@@ -33,6 +43,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
             return false;
         });
+
     }
 
     private void navigateToHome() {
@@ -49,5 +60,9 @@ public class ProfileActivity extends AppCompatActivity {
     }
     private void navigateToProfile() {
         // Handle profile navigation
+    }
+    private void logOut() {
+        Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+        startActivity(intent);
     }
 }

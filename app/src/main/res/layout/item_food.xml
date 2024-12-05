@@ -57,8 +57,9 @@
                     android:id="@+id/btn_recommend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Recomendar"
+                    android:text="Encomendar"
                     android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/green"
                     style="@style/Widget.MaterialComponents.Button"/>
             </LinearLayout>
         </LinearLayout>

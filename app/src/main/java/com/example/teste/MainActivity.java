@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
 
             recommendButton.setOnClickListener(v -> {
                 // Handle recommend button click
+                Intent intent = new Intent(MainActivity.this, EncomendaActivity.class);
+                startActivity(intent);
                 Toast.makeText(MainActivity.this,
                         "Recommended: " + item.getName(),
                         Toast.LENGTH_SHORT).show();

@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="#A3D26F">
+    android:background="@color/white">
 
     <!-- Header -->
     <TextView
@@ -13,7 +12,7 @@
         android:layout_height="wrap_content"
         android:text="Let's\nCreate\nYour\nAccount"
         android:textSize="28sp"
-        android:textColor="#333333"
+        android:textColor="@color/green"
         android:fontFamily="sans-serif-medium"
         android:paddingBottom="24dp" />
 
@@ -24,11 +23,12 @@
         android:hint="Full Name"
         android:layout_marginBottom="16dp"
         app:startIconDrawable="@drawable/ic_person"
-        app:boxStrokeColor="#A3D26F">
+        app:boxStrokeColor="@color/brown"
+        android:id="@+id/nome">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Email Address Input -->
@@ -38,11 +38,12 @@
         android:hint="Email Address"
         android:layout_marginBottom="16dp"
         app:startIconDrawable="@drawable/ic_email"
-        app:boxStrokeColor="#A3D26F">
+        app:boxStrokeColor="#A3D26F"
+        android:id="@+id/email">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Password Input -->
@@ -53,12 +54,13 @@
         android:layout_marginBottom="16dp"
         app:startIconDrawable="@drawable/ic_lock"
         app:endIconMode="password_toggle"
-        app:boxStrokeColor="#A3D26F">
+        app:boxStrokeColor="#A3D26F"
+        android:id="@+id/pass">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Retype Password Input -->
@@ -69,29 +71,37 @@
         android:layout_marginBottom="16dp"
         app:startIconDrawable="@drawable/ic_lock"
         app:endIconMode="password_toggle"
-        app:boxStrokeColor="#A3D26F">
+        app:boxStrokeColor="#A3D26F"
+        android:id="@+id/repass">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Terms & Privacy Text -->
-    <CheckBox
-        android:id="@+id/checkbox_terms"
+    <!-- Terms & Privacy Layout -->
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="I agree to the "
-        android:textColor="#333333">
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <CheckBox
+            android:id="@+id/checkbox_terms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I agree to the "
+            android:textColor="#333333" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Terms and Privacy"
-            android:textColor="#A3D26F"
+            android:textColor="@color/brown"
             android:clickable="true"
-            android:textStyle="bold"/>
-    </CheckBox>
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <!-- Sign Up Button -->
     <Button
@@ -99,9 +109,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:background="@drawable/rounded_button"
+        android:backgroundTint="@color/green"
         android:text="Sign Up"
-        android:textColor="#FFFFFF"/>
+        android:textColor="#FFFFFF" />
 
     <!-- Sign In Link -->
     <TextView
@@ -111,5 +121,5 @@
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
         android:text="Have an account? Sign In"
-        android:textColor="#A3D26F"/>
+        android:textColor="@color/brown" />
 </LinearLayout>

@@ -159,5 +159,17 @@ public class DBHandler extends SQLiteOpenHelper {
         return isRegistered;
     }
 
+    public void editProfile(String name, String email, String address) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("FULL_NAME", name);
+        values.put("EMAIL", email);
+        values.put("ADDRESS", address);
+        db.update("users", values, "EMAIL = ?", new String[]{email});
+        db.close();
+    }
+
+
 
 }

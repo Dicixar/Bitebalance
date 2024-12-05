@@ -46,31 +46,16 @@ public class RegisterActivity extends AppCompatActivity {
                 String email = String.valueOf(etEmail.getEditText().getText());
                 String repass = String.valueOf(etRepass.getEditText().getText());
 
-
-                if (!password.equals(repass)) {
-                    Toast.makeText(RegisterActivity.this, "As passwords não correpondem", Toast.LENGTH_SHORT).show();
-                }
-
-                if (email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(RegisterActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                if (!validations(nome, email, password, repass)) {
                     return;
                 }
 
-                if (!checkBox.isChecked()) {
-                    Toast.makeText(RegisterActivity.this, "Please accept Terms & Privacy", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (dbHandler.isEmailRegistered(email)) {
-                    Toast.makeText(RegisterActivity.this, "Email is already registered", Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
                 // Adiciona o utilizador à base de dados
                 dbHandler.addNewUser(nome, email, password);
                 Toast.makeText(RegisterActivity.this, "Account Created!", Toast.LENGTH_SHORT).show();
 
-                // Redireciona para a página de login após o registo bem-sucedido
+                // Redireciona para a página de logina após o registo bem-sucedido
                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                 finish(); // Fecha a atividade de registo
             }
@@ -84,4 +69,74 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
+    public boolean validations(String nome, String email, String password, String repass) {
+        if (!password.equals(repass)) {
+            Toast.makeText(RegisterActivity.this, "As passwords não correspondem", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (!email.contains("@")) {
+            Toast.makeText(RegisterActivity.this, "O email precisa de conter @", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (email.isEmpty() || password.isEmpty() || nome.isEmpty()) {
+            Toast.makeText(RegisterActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (password.length() < 8) {
+            Toast.makeText(RegisterActivity.this, "Password must be at least 8 characters long", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (!password.matches(".*[A-Z].*")) {
+            Toast.makeText(RegisterActivity.this, "Password must contain at least one uppercase letter", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (!password.matches(".*[a-z].*")) {
+            Toast.makeText(RegisterActivity.this, "Password must contain at least one lowercase letter", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (!password.matches(".*\\d.*")) {
+            Toast.makeText(RegisterActivity.this, "Password must contain at least one digit", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (!password.matches(".*[!@#$%^&*()].*")) {
+            Toast.makeText(RegisterActivity.this, "Password must contain at least one special character", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (email.contains(" ")) {
+            Toast.makeText(RegisterActivity.this, "Email cannot contain spaces", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (email.length() > 50) {
+            Toast.makeText(RegisterActivity.this, "Email cannot be longer than 50 characters", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (nome.length() > 50) {
+            Toast.makeText(RegisterActivity.this, "Nome cannot be longer than 50 characters", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (!checkBox.isChecked()) {
+            Toast.makeText(RegisterActivity.this, "Please accept Terms & Privacy", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (dbHandler.isEmailRegistered(email)) {
+            Toast.makeText(RegisterActivity.this, "Email is already registered", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
 }

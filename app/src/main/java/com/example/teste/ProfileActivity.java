@@ -20,13 +20,14 @@ public class ProfileActivity extends AppCompatActivity {
     private DBHandler dbHandler;
     private Button btn1;
     private EditText nome, phone, morada;
-    private TextView email;
+    private TextView email, nome1;
 
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        setupBottomNavigation();
 
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("IS_LOGGED_IN", false);
@@ -36,6 +37,7 @@ public class ProfileActivity extends AppCompatActivity {
         morada = findViewById(R.id.morada);
         btn1 = findViewById(R.id.atualizar);
         btn2 = findViewById(R.id.btn_back);
+        nome1 = findViewById(R.id.nome1);
         dbHandler = new DBHandler(this);
 
         if (!isLoggedIn) {
@@ -55,6 +57,8 @@ public class ProfileActivity extends AppCompatActivity {
                 email.setText(user.getEmail());
                 phone.setText(user.getPhone());
                 morada.setText(user.getMorada());
+                nome1.setText(user.getName());
+
             }
         }
 

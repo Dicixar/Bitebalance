@@ -19,20 +19,32 @@
             android:gravity="center_vertical"
             android:padding="8dp">
 
+            <!-- Ícone de pesquisa -->
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_search"
                 android:layout_marginEnd="8dp"/>
 
+            <!-- Caixa de texto para pesquisa -->
             <EditText
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@null"
                 android:hint="Frango, Salada, etc..."
                 android:textSize="14sp"/>
+
+            <!-- Imagem ao lado da barra de pesquisa -->
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/shoppingcart_com"
+                android:id="@+id/carrinho">
+            </ImageView>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
 
     <!-- Doctor Card -->
     <androidx.cardview.widget.CardView
@@ -96,19 +108,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
-
-            <!-- Food Item 1: Sushi -->
-            <include layout="@layout/item_food"
-                android:id="@+id/sushi_item"/>
-
-            <!-- Food Item 2: Salada com Lombo -->
-            <include layout="@layout/item_food"
-                android:id="@+id/salad_item"/>
-
-            <!-- Food Item 3: Frango com Arroz -->
-            <include layout="@layout/item_food"
-                android:id="@+id/chicken_item"/>
+            android:padding="16dp"
+            android:id="@+id/foodcontainer">
 
         </LinearLayout>
     </ScrollView>

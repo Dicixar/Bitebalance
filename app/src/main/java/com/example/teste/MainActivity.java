@@ -1,15 +1,18 @@
 package com.example.teste;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -19,11 +22,20 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private List<FoodItem> foodItems;
-
+    private ImageView carrinho;
+    private DBHandler dbHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        carrinho = findViewById(R.id.carrinho);
+        carrinho.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, EncomendaActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
 
         // Verificar a sessão do utilizador
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
@@ -37,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             // Caso a sessão exista, carrega os dados do utilizador
+            String id = sharedPreferences.getString("USER_ID", "no ID");
             String userName = sharedPreferences.getString("USER_NAME", "Guest");
             String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
             initializeFoodItems();
@@ -44,22 +57,13 @@ public class MainActivity extends AppCompatActivity {
             setupFoodItems();
         }
 
+
+
     }
 
     private void initializeFoodItems() {
+
         foodItems = new ArrayList<>();
-        foodItems.add(new FoodItem("Sushi",
-                "Boiled sushi, or maki, is sushi where ingredients like fish, vegetables, and rice are wrapped in dried seaweed sheets and then sliced into bite-sized pieces.",
-                9.99,
-                R.drawable.sushi_image));
-        foodItems.add(new FoodItem("Salada com Lombo",
-                "Boiled sushi, or maki, is sushi where ingredients like fish, vegetables, and rice are wrapped in dried seaweed sheets and then sliced into bite-sized pieces.",
-                8.99,
-                R.drawable.salad_image));
-        foodItems.add(new FoodItem("Frango com Arroz",
-                "Boiled sushi, or maki, is sushi where ingredients like fish, vegetables, and rice are wrapped in dried seaweed sheets and then sliced into bite-sized pieces.",
-                9.99,
-                R.drawable.chicken_rice_image));
     }
 
 
@@ -99,33 +103,37 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @SuppressLint("DefaultLocale")
     private void setupFoodItems() {
-        // Setup food items in the layout
-        int[] foodItemIds = {R.id.sushi_item, R.id.salad_item, R.id.chicken_item};
+        SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
+        String id = sharedPreferences.getString("USER_ID", "no ID");
 
-        for (int i = 0; i < foodItemIds.length; i++) {
-            View itemView = findViewById(foodItemIds[i]);
-            FoodItem item = foodItems.get(i);
-
+        LinearLayout foodcontainer = findViewById(R.id.foodcontainer);
+        dbHandler = new DBHandler(this);
+        List<DBHandler.Meal> meals = dbHandler.getMeals();
+        for (DBHandler.Meal meal : meals) {
+            foodItems.add(new FoodItem(meal.getId(), meal.getName(), meal.getDescription(), meal.getPrice(), meal.getImage()));
+            View itemView = getLayoutInflater().inflate(R.layout.item_food, foodcontainer, false);
             ImageView foodImage = itemView.findViewById(R.id.food_image);
             TextView foodName = itemView.findViewById(R.id.food_name);
             TextView foodDescription = itemView.findViewById(R.id.food_description);
             TextView foodPrice = itemView.findViewById(R.id.food_price);
             Button recommendButton = itemView.findViewById(R.id.btn_recommend);
 
-            foodImage.setImageResource(item.getImageResource());
-            foodName.setText(item.getName());
-            foodDescription.setText(item.getDescription());
-            foodPrice.setText(String.format("$%.2f", item.getPrice()));
-
             recommendButton.setOnClickListener(v -> {
-                // Handle recommend button click
-                Intent intent = new Intent(MainActivity.this, EncomendaActivity.class);
-                startActivity(intent);
-                Toast.makeText(MainActivity.this,
-                        "Recommended: " + item.getName(),
-                        Toast.LENGTH_SHORT).show();
-            });
+                dbHandler.addCart(meal, Integer.parseInt(id), meal.getId());
+                Toast.makeText(MainActivity.this, "Meal added to cart", Toast.LENGTH_SHORT).show();
+                    });
+            foodImage.setImageResource(meal.getImage());
+            foodName.setText(meal.getName());
+            foodDescription.setText(meal.getDescription());
+            foodPrice.setText(String.format("€ %.2f", meal.getPrice()));
+            foodcontainer.addView(itemView);
+
         }
+
     }
+
+
+
 }

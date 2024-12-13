@@ -1,6 +1,7 @@
 package com.example.teste;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -25,6 +26,8 @@ public class EncomendaActivity extends AppCompatActivity {
 
         img1 = findViewById(R.id.voltar);
         img1.setOnClickListener(view -> {
+            Intent intent = new Intent(EncomendaActivity.this, MainActivity.class);
+            startActivity(intent);
             finish();
         });
 

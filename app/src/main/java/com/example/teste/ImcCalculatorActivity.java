@@ -21,12 +21,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Referências aos componentes do layout
-        EditText inputHeight = findViewById(R.id.altura);
-        EditText inputWeight = findViewById(R.id.peso);
-        Button btnCalculate = findViewById(R.id.calcularButton);
-        TextView textResult = findViewById(R.id.resultado);
+        EditText inputHeight = findViewById(R.id.input_height);
+        EditText inputWeight = findViewById(R.id.input_weight);
+        Button btnCalculate = findViewById(R.id.btn_calculate);
+        TextView textResult = findViewById(R.id.text_result);
         ImageView imcBar = findViewById(R.id.imcBar);
         ImageView imcPointer = findViewById(R.id.imcPointer);
+        TextView textClassification = findViewById(R.id.text_classification);
 
 
         // Configuração do botão de calcular
@@ -60,32 +61,31 @@ public class MainActivity extends AppCompatActivity {
 
                             if (imc < 16) {
                                 classification = "Magreza extrema";
-                                position = barWidth * -0.40f; // 5% da barra
+                                position = barWidth * 0.065f; // 5% da barra
                             } else if (imc < 17) {
                                 classification = "Magreza moderada";
-                                position = barWidth * -0.28f; // 15% da barra
+                                position = barWidth * 0.185f; // 15% da barra
                             } else if (imc < 18.5) {
                                 classification = "Abaixo do peso";
-                                position = barWidth * -0.15f; // 25% da barra
+                                position = barWidth * 0.31f; // 25% da barra
                             } else if (imc < 25) {
                                 classification = "Normal";
-                                position = barWidth * 0.0f; // 50% da barra
+                                position = barWidth * 0.436f; // 50% da barra
                             } else if (imc < 30) {
                                 classification = "Excesso de peso";
-                                position = barWidth * 0.07f; // 70% da barra
+                                position = barWidth * 0.558f; // 70% da barra
                             } else if (imc < 35) {
                                 classification = "Obeso classe I";
-                                position = barWidth * 0.24f; // 85% da barra
+                                position = barWidth * 0.685f; // 85% da barra
                             } else if (imc < 40) {
                                 classification = "Obeso classe II";
-                                position = barWidth * 0.34f; // 95% da barra
+                                position = barWidth * 0.815f; // 95% da barra
                             } else {
                                 classification = "Obeso classe III";
-                                position = barWidth * 0.50f; // Fim da barra
+                                position = barWidth * 0.94f; // Fim da barra
                             }
-
                             // Atualizar o texto
-                            textResult.setText("Classificação: " + classification);
+                            textClassification.setText("Classificação: " + classification);
 
                             // Posicionar a seta (ajustando para centralizá-la)
                             imcPointer.setTranslationX(position - (imcPointer.getWidth() / 2));
@@ -105,3 +105,39 @@ public class MainActivity extends AppCompatActivity {
         });
     };
     }
+
+private void setupBottomNavigation() {
+    BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+    bottomNav.setOnNavigationItemSelectedListener(item -> {
+        if (item.getItemId() == R.id.navigation_home) {
+            navigateToHome();
+            return true;
+        } else if (item.getItemId() == R.id.navigation_simulator) {
+            navigateToSimulator();
+            return true;
+        } else if (item.getItemId() == R.id.navigation_health) {
+            navigateToHealth();
+            return true;
+        } else if (item.getItemId() == R.id.navigation_profile) {
+            navigateToProfile();
+            return true;
+        }
+        return false;
+    });
+}
+    private void navigateToHome() {
+        // Handle home navigation
+        Intent intent = new Intent(ImcCalculatorActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
+    private void navigateToSimulator() {
+        // Handle simulator navigation
+    }
+    private void navigateToHealth() {
+        // Handle health navigation
+    }
+    private void navigateToProfile() {
+        Intent intent = new Intent(ImcCalculatorActivity.this, ProfileActivity.class);
+        startActivity(intent);
+    }
+}

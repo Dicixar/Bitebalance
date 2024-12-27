@@ -133,18 +133,19 @@
         </LinearLayout>
 
         <!-- Botão para Calcular -->
+
+        <!-- Resultado do IMC -->
         <Button
             android:id="@+id/btn_calculate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Calcular IMC"
-            android:backgroundTint="@android:color/holo_green_light"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
             android:layout_marginBottom="16dp"
-            android:elevation="4dp" />
+            android:backgroundTint="@android:color/holo_green_light"
+            android:elevation="4dp"
+            android:text="Calcular IMC"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
 
-        <!-- Resultado do IMC -->
         <TextView
             android:id="@+id/text_result"
             android:layout_width="match_parent"
@@ -157,13 +158,20 @@
 
         <!-- Barra de Classificação -->
         <ImageView
-            android:id="@+id/imc_bar"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:contentDescription="Barra de IMC"
-            android:scaleType="fitCenter"
-            android:layout_marginBottom="16dp"
-            android:background="@android:color/holo_orange_light" />
+            android:id="@+id/imcBar"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:src="@drawable/barra_imc"
+            android:scaleType="fitXY"
+            android:layout_marginBottom="10dp"/>
+
+        <ImageView
+            android:id="@+id/imcPointer"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignBottom="@id/imcBar"
+            android:rotation="180"
+            android:src="@drawable/pointer" />
 
         <!-- Classificação de IMC -->
         <TextView

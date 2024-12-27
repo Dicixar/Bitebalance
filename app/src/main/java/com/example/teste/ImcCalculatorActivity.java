@@ -1,4 +1,4 @@
-package com.example.teste;
+package com.example.teste_bb;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,22 +12,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class ImcCalculatorActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_imc_calculator);
-        setupBottomNavigation();
+        setContentView(R.layout.activity_main);
+
 
         // Referências aos componentes do layout
-        EditText inputHeight = findViewById(R.id.input_height);
-        EditText inputWeight = findViewById(R.id.input_weight);
-        EditText inputGoal = findViewById(R.id.input_goal);
-        Button btnCalculate = findViewById(R.id.btn_calculate);
-        TextView textResult = findViewById(R.id.text_result);
-        TextView textClassification = findViewById(R.id.text_classification);
-        ImageView imcBar = findViewById(R.id.imc_bar);
+        EditText inputHeight = findViewById(R.id.altura);
+        EditText inputWeight = findViewById(R.id.peso);
+        Button btnCalculate = findViewById(R.id.calcularButton);
+        TextView textResult = findViewById(R.id.resultado);
+        ImageView imcBar = findViewById(R.id.imcBar);
+        ImageView imcPointer = findViewById(R.id.imcPointer);
+
 
         // Configuração do botão de calcular
         btnCalculate.setOnClickListener(v -> {
@@ -47,43 +47,55 @@ public class ImcCalculatorActivity extends AppCompatActivity {
                         // Exibir o resultado do IMC
                         textResult.setText(String.format("IMC: %.1f", imc));
 
-//                        // Determinar a classificação
-//                        String classification;
-//                        if (imc < 16) {
-//                            classification = "Magreza extrema";
-//                            imcBar.setImageResource(R.drawable.imc_bar_magreza_extrema);
-//                        } else if (imc < 17) {
-//                            classification = "Magreza moderada";
-//                            imcBar.setImageResource(R.drawable.imc_bar_magreza_moderada);
-//                        } else if (imc < 18.5) {
-//                            classification = "Abaixo do peso";
-//                            imcBar.setImageResource(R.drawable.imc_bar_abaixo_peso);
-//                        } else if (imc < 25) {
-//                            classification = "Normal";
-//                            imcBar.setImageResource(R.drawable.imc_bar_normal);
-//                        } else if (imc < 30) {
-//                            classification = "Excesso de peso";
-//                            imcBar.setImageResource(R.drawable.imc_bar_excesso_peso);
-//                        } else if (imc < 35) {
-//                            classification = "Obeso classe I";
-//                            imcBar.setImageResource(R.drawable.imc_bar_obeso_i);
-//                        } else if (imc < 40) {
-//                            classification = "Obeso classe II";
-//                            imcBar.setImageResource(R.drawable.imc_bar_obeso_ii);
-//                        } else {
-//                            classification = "Obeso classe III";
-//                            imcBar.setImageResource(R.drawable.imc_bar_obeso_iii);
-//                        }
+                        // Obter a largura da barra após ser renderizada
+                        imcBar.post(() -> {
+                            // Largura total da barra
+                            int barWidth = imcBar.getWidth();
 
-//                         Exibir a classificação
-//                        textClassification.setText("Classificação: " + classification);
-                    }
-                    else
+                            // Posição inicial do indicador
+                            float position = 0;
+
+                            // Determinar a classificação
+                            String classification;
+
+                            if (imc < 16) {
+                                classification = "Magreza extrema";
+                                position = barWidth * -0.40f; // 5% da barra
+                            } else if (imc < 17) {
+                                classification = "Magreza moderada";
+                                position = barWidth * -0.28f; // 15% da barra
+                            } else if (imc < 18.5) {
+                                classification = "Abaixo do peso";
+                                position = barWidth * -0.15f; // 25% da barra
+                            } else if (imc < 25) {
+                                classification = "Normal";
+                                position = barWidth * 0.0f; // 50% da barra
+                            } else if (imc < 30) {
+                                classification = "Excesso de peso";
+                                position = barWidth * 0.07f; // 70% da barra
+                            } else if (imc < 35) {
+                                classification = "Obeso classe I";
+                                position = barWidth * 0.24f; // 85% da barra
+                            } else if (imc < 40) {
+                                classification = "Obeso classe II";
+                                position = barWidth * 0.34f; // 95% da barra
+                            } else {
+                                classification = "Obeso classe III";
+                                position = barWidth * 0.50f; // Fim da barra
+                            }
+
+                            // Atualizar o texto
+                            textResult.setText("Classificação: " + classification);
+
+                            // Posicionar a seta (ajustando para centralizá-la)
+                            imcPointer.setTranslationX(position - (imcPointer.getWidth() / 2));
+                        });
+                    }else
                     {
                         Toast.makeText(this, "Altura deve ser maior que zero.", Toast.LENGTH_SHORT).show();
                     }
                 }
-                    catch (NumberFormatException e) {
+                catch (NumberFormatException e) {
                     Toast.makeText(this, "Por favor, insira valores numéricos válidos.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -91,40 +103,5 @@ public class ImcCalculatorActivity extends AppCompatActivity {
                 Toast.makeText(this, "Por favor, preencha todos os campos.", Toast.LENGTH_SHORT).show();
             }
         });
+    };
     }
-    private void setupBottomNavigation() {
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setOnNavigationItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.navigation_home) {
-                navigateToHome();
-                return true;
-            } else if (item.getItemId() == R.id.navigation_simulator) {
-                navigateToSimulator();
-                return true;
-            } else if (item.getItemId() == R.id.navigation_health) {
-                navigateToHealth();
-                return true;
-            } else if (item.getItemId() == R.id.navigation_profile) {
-                navigateToProfile();
-                return true;
-            }
-            return false;
-        });
-    }
-
-    private void navigateToHome() {
-        // Handle home navigation
-        Intent intent = new Intent(ImcCalculatorActivity.this, MainActivity.class);
-        startActivity(intent);
-    }
-    private void navigateToSimulator() {
-        // Handle simulator navigation
-    }
-    private void navigateToHealth() {
-        // Handle health navigation
-    }
-    private void navigateToProfile() {
-        Intent intent = new Intent(ImcCalculatorActivity.this, ProfileActivity.class);
-        startActivity(intent);
-    }
-}

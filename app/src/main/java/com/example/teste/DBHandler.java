@@ -458,9 +458,9 @@ public class DBHandler extends SQLiteOpenHelper {
                 );
                 meals.add(meal);
             } while (cursor.moveToNext());
-            cursor.close();
-            db.close();
         }
+        cursor.close();
+        db.close();
         return meals;
     }
 
@@ -605,6 +605,13 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
 
         return total;
+    }
+
+    public void clearCart(int userId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(CART_TABLE, CART_USER_ID + " = ? AND " + CART_STATUS + " = ?",
+                new String[] { String.valueOf(userId), "pending" });
+        db.close();
     }
 
 

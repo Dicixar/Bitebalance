@@ -21,7 +21,7 @@ import java.util.List;
 
 public class ItemActivity extends AppCompatActivity {
     private ImageView back,foodImage;
-    private TextView nome,desc,preco;
+    private TextView nome,desc,preco,title;
     private Button adicionar;
     private DBHandler dbHandler;
 
@@ -36,6 +36,7 @@ public class ItemActivity extends AppCompatActivity {
         desc = findViewById(R.id.food_description);
         preco = findViewById(R.id.food_price);
         adicionar = findViewById(R.id.btnOrderNow);
+        title = findViewById(R.id.food_title);
         dbHandler = new DBHandler(this);
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
         String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
@@ -48,6 +49,7 @@ public class ItemActivity extends AppCompatActivity {
         nome.setText(meal.getName());
         desc.setText(meal.getDescription());
         preco.setText(String.format("€ %.2f", meal.getPrice()));
+        title.setText(meal.getName());
 
 
         back.setOnClickListener(view -> {

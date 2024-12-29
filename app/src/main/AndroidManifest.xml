@@ -33,6 +33,8 @@
         <activity android:name=".RegisterActivity"/>
         <activity android:name=".EncomendaActivity"/>
         <activity android:name=".ItemActivity"/>
+        <activity android:name=".PaymentActivity"/>
+
         <meta-data
             android:name="osmdroid.basePath"
             android:value="osmdroid" />

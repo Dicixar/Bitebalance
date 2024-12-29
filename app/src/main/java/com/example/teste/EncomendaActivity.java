@@ -4,13 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +27,7 @@ public class EncomendaActivity extends AppCompatActivity {
     private DBHandler dbHandler;
     private LinearLayout cartLayout;
     private TextView total;
+    private Button finalizar;
 
 
     @SuppressLint({"MissingInflatedId", "SetTextI18n"})
@@ -39,6 +38,7 @@ public class EncomendaActivity extends AppCompatActivity {
 
         dbHandler = new DBHandler(this);
         cartLayout = findViewById(R.id.product_list);
+
 
 
         // Verificar a sessão do utilizador
@@ -69,6 +69,28 @@ public class EncomendaActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+
+        Button limpar = findViewById(R.id.limpar);
+        limpar.setOnClickListener(view -> {
+            String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
+            dbHandler.clearCart(dbHandler.getUserId(userEmail));
+            displayCartItems(userEmail);
+            total.setText("Total: €" + dbHandler.getTotalCart(dbHandler.getUserId(userEmail)));
+        });
+
+        finalizar = findViewById(R.id.btn_finalize_order);
+        finalizar.setOnClickListener(view -> {
+            String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
+            if (dbHandler.getCartItems(dbHandler.getUserId(userEmail)).isEmpty()) {
+                Toast.makeText(EncomendaActivity.this, "O carrinho está vazio", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Intent intent = new Intent(EncomendaActivity.this, PaymentActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
 
         // Configuração inicial do OSMDroid
         Configuration.getInstance().load(getApplicationContext(),

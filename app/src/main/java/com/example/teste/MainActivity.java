@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             // Caso a sessão exista, carrega os dados do utilizador
-            String id = sharedPreferences.getString("USER_ID", "no ID");
             String userName = sharedPreferences.getString("USER_NAME", "Guest");
             String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
             initializeFoodItems();
@@ -106,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("DefaultLocale")
     private void setupFoodItems() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
-        String id = sharedPreferences.getString("USER_ID", "no ID");
+        String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
 
         LinearLayout foodcontainer = findViewById(R.id.foodcontainer);
         dbHandler = new DBHandler(this);
@@ -121,8 +120,14 @@ public class MainActivity extends AppCompatActivity {
             Button recommendButton = itemView.findViewById(R.id.btn_recommend);
 
             recommendButton.setOnClickListener(v -> {
-                dbHandler.addCart(meal, Integer.parseInt(id), meal.getId());
-                Toast.makeText(MainActivity.this, "Meal added to cart", Toast.LENGTH_SHORT).show();
+                dbHandler.addCart(meal, dbHandler.getUserId(userEmail), meal.getId());
+                Toast.makeText(MainActivity.this, "Adicionado ao carrinho: " + meal.getName(), Toast.LENGTH_SHORT).show();
+                    });
+
+            itemView.setOnClickListener(v -> {
+                        Intent intent = new Intent(MainActivity.this, ItemActivity.class);
+                        intent.putExtra("meal_id", meal.getId() - 1);
+                        startActivity(intent);
                     });
             foodImage.setImageResource(meal.getImage());
             foodName.setText(meal.getName());

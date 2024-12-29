@@ -1,5 +1,6 @@
-package com.example.teste_bb;
+package com.example.teste;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -12,13 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class ImcCalculatorActivity extends AppCompatActivity {
 
     @Override
+    @SuppressLint({"MissingInflatedId", "LocalSuppress"})
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_imc_calculator);
 
         // Referências aos componentes do layout
         EditText inputHeight = findViewById(R.id.input_height);
@@ -28,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
         ImageView imcBar = findViewById(R.id.imcBar);
         ImageView imcPointer = findViewById(R.id.imcPointer);
         TextView textClassification = findViewById(R.id.text_classification);
-
 
         // Configuração do botão de calcular
         btnCalculate.setOnClickListener(v -> {
@@ -90,52 +90,53 @@ public class MainActivity extends AppCompatActivity {
                             // Posicionar a seta (ajustando para centralizá-la)
                             imcPointer.setTranslationX(position - (imcPointer.getWidth() / 2));
                         });
-                    }else
-                    {
+                    } else {
                         Toast.makeText(this, "Altura deve ser maior que zero.", Toast.LENGTH_SHORT).show();
                     }
-                }
-                catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     Toast.makeText(this, "Por favor, insira valores numéricos válidos.", Toast.LENGTH_SHORT).show();
                 }
-            }
-            else {
+            } else {
                 Toast.makeText(this, "Por favor, preencha todos os campos.", Toast.LENGTH_SHORT).show();
             }
         });
-    };
+
+        setupBottomNavigation();
     }
 
-private void setupBottomNavigation() {
-    BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-    bottomNav.setOnNavigationItemSelectedListener(item -> {
-        if (item.getItemId() == R.id.navigation_home) {
-            navigateToHome();
-            return true;
-        } else if (item.getItemId() == R.id.navigation_simulator) {
-            navigateToSimulator();
-            return true;
-        } else if (item.getItemId() == R.id.navigation_health) {
-            navigateToHealth();
-            return true;
-        } else if (item.getItemId() == R.id.navigation_profile) {
-            navigateToProfile();
-            return true;
-        }
-        return false;
-    });
-}
+    private void setupBottomNavigation() {
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.navigation_home) {
+                navigateToHome();
+                return true;
+            } else if (item.getItemId() == R.id.navigation_simulator) {
+                navigateToSimulator();
+                return true;
+            } else if (item.getItemId() == R.id.navigation_health) {
+                navigateToHealth();
+                return true;
+            } else if (item.getItemId() == R.id.navigation_profile) {
+                navigateToProfile();
+                return true;
+            }
+            return false;
+        });
+    }
+
     private void navigateToHome() {
-        // Handle home navigation
         Intent intent = new Intent(ImcCalculatorActivity.this, MainActivity.class);
         startActivity(intent);
     }
+
     private void navigateToSimulator() {
         // Handle simulator navigation
     }
+
     private void navigateToHealth() {
         // Handle health navigation
     }
+
     private void navigateToProfile() {
         Intent intent = new Intent(ImcCalculatorActivity.this, ProfileActivity.class);
         startActivity(intent);

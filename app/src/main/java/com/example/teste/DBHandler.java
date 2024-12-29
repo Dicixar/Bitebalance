@@ -80,7 +80,7 @@ public class DBHandler extends SQLiteOpenHelper {
         private int image;
         private int id;
 
-        public Meal(String name, String description, double price, int image) {
+        public Meal(String name, String description, double price, int image, int id) {
             this.name = name;
             this.description = description;
             this.price = price;
@@ -124,6 +124,35 @@ public class DBHandler extends SQLiteOpenHelper {
             this.image = image;
         }
     }
+
+    public class CartItem {
+        private int id;
+        private Meal meal;
+        private int quantity;
+
+        public CartItem(int id, Meal meal, int quantity) {
+            this.id = id;
+            this.meal = meal;
+            this.quantity = quantity;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public Meal getMeal() {
+            return meal;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public double getTotalPrice() {
+            return meal.getPrice() * quantity;
+        }
+    }
+
 
     // Database name and version
     private static final String DB_NAME = "bitebalance";
@@ -424,7 +453,8 @@ public class DBHandler extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndexOrThrow(MEAL_NAME)),
                         cursor.getString(cursor.getColumnIndexOrThrow(MEAL_DESCRIPTION)),
                         cursor.getDouble(cursor.getColumnIndexOrThrow(MEAL_PRICE)),
-                        cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_IMAGE))
+                        cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_IMAGE)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_ID))
                 );
                 meals.add(meal);
             } while (cursor.moveToNext());
@@ -454,15 +484,128 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
+    @SuppressLint("Range")
     public void addCart(Meal meal, int iduser, int idmeal) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(CART_USER_ID, iduser);
-        values.put(CART_MEAL_ID, idmeal);
-        values.put(CART_QUANTITY, 1);
-        values.put(CART_STATUS, "pending");
-        db.insert(CART_TABLE, null, values);
+
+        // Verifica se o item já existe no carrinho
+        String query = "SELECT * FROM " + CART_TABLE +
+                " WHERE " + CART_USER_ID + " = ? AND " + CART_MEAL_ID + " = ? AND " + CART_STATUS + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[] { String.valueOf(iduser), String.valueOf(idmeal), "pending" });
+
+        if (cursor.moveToFirst()) {
+            // Se a refeição já existe no carrinho, atualiza a quantidade
+            int currentQuantity = cursor.getInt(cursor.getColumnIndex(CART_QUANTITY));
+            int newQuantity = currentQuantity + 1;
+
+            ContentValues values = new ContentValues();
+            values.put(CART_QUANTITY, newQuantity);
+
+            // Atualiza a quantidade na base de dados
+            db.update(CART_TABLE, values,
+                    CART_USER_ID + " = ? AND " + CART_MEAL_ID + " = ? AND " + CART_STATUS + " = ?",
+                    new String[] { String.valueOf(iduser), String.valueOf(idmeal), "pending" });
+        } else {
+            // Caso não exista, insere uma nova refeição no carrinho com quantidade 1
+            ContentValues values = new ContentValues();
+            values.put(CART_USER_ID, iduser);
+            values.put(CART_MEAL_ID, idmeal);
+            values.put(CART_QUANTITY, 1);
+            values.put(CART_STATUS, "pending");
+
+            db.insert(CART_TABLE, null, values);
+        }
+
+        cursor.close();
         db.close();
     }
+
+    @SuppressLint("Range")
+    public int getUserId(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT id FROM users WHERE email = ?",
+                new String[]{email});
+        int userId = -1;
+        if (cursor.moveToFirst()) {
+            userId = cursor.getInt(cursor.getColumnIndex("id"));
+        }
+        cursor.close();
+        db.close();
+        return userId;
+    }
+
+    public Meal getMealById(int mealId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM meals WHERE id = ?", new String[]{String.valueOf(mealId)});
+
+        if (cursor.moveToFirst()) {
+            Meal meal = new Meal(
+                    cursor.getString(cursor.getColumnIndexOrThrow(MEAL_NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(MEAL_DESCRIPTION)),
+                    cursor.getDouble(cursor.getColumnIndexOrThrow(MEAL_PRICE)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_IMAGE)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_ID))
+            );
+            cursor.close();
+            db.close();
+            return meal;
+        }
+
+        cursor.close();
+        db.close();
+        return null;
+    }
+
+    @SuppressLint("Range")
+    public List<CartItem> getCartItems(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM cart WHERE user_id = ? AND status = ?",
+                new String[]{String.valueOf(userId), "pending"});
+
+        List<CartItem> cartItems = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                int cartItemId = cursor.getInt(cursor.getColumnIndexOrThrow(CART_ID));
+                int mealId = cursor.getInt(cursor.getColumnIndexOrThrow(CART_MEAL_ID));
+                int quantity = cursor.getInt(cursor.getColumnIndexOrThrow(CART_QUANTITY));
+                // Aqui, vamos buscar os detalhes da refeição no banco de dados
+                Meal meal = getMealById(mealId);
+                if (meal != null) {
+                    CartItem cartItem = new CartItem(cartItemId, meal, quantity);
+                    cartItems.add(cartItem);
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return cartItems;
+    }
+
+    @SuppressLint("Range")
+    public double getTotalCart(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // A consulta junta a tabela do carrinho e a tabela de refeições para pegar o preço de cada refeição
+        String query = "SELECT SUM(c." + CART_QUANTITY + " * m." + MEAL_PRICE + ") AS total " +
+                "FROM " + CART_TABLE + " c " +
+                "JOIN " + MEALS_TABLE + " m ON c." + CART_MEAL_ID + " = m." + MEAL_ID +
+                " WHERE c." + CART_USER_ID + " = ? AND c." + CART_STATUS + " = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[] { String.valueOf(userId), "pending" });
+
+        double total = 0.0;
+
+        if (cursor.moveToFirst()) {
+            // Se houver resultados, pega o total calculado
+            total = cursor.getDouble(cursor.getColumnIndex("total"));
+        }
+
+        cursor.close();
+        db.close();
+
+        return total;
+    }
+
 
 }

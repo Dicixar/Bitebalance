@@ -8,16 +8,17 @@
     android:background="@android:color/white"
     tools:context=".EncomendaActivity">
 
+    <!-- Barra superior com botão de voltar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp">
 
         <ImageButton
+            android:id="@+id/voltar"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:id="@+id/voltar">
-
-        </ImageButton>
+            android:src="@android:drawable/ic_menu_revert"
+            android:background="@android:color/transparent" />
     </LinearLayout>
 
     <!-- Mapa para seleção do ponto de entrega -->
@@ -31,7 +32,8 @@
     <!-- Lista de produtos -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical"
         android:padding="8dp">
 
@@ -46,40 +48,17 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/scroll"
+            android:fillViewport="true">
 
             <LinearLayout
+                android:id="@+id/product_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- Exemplo de produto -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="8dp"
-                    android:background="@android:color/white"
-                    android:elevation="2dp"
-                    android:layout_marginBottom="8dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Produto 1"
-                        android:textSize="16sp"
-                        android:textColor="@android:color/black" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="€10.00"
-                        android:textSize="16sp"
-                        android:textColor="@android:color/black" />
-                </LinearLayout>
-
-                <!-- Repita o layout acima para outros produtos -->
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
@@ -94,6 +73,7 @@
         android:elevation="4dp">
 
         <TextView
+            android:id="@+id/total"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Total: €50.00"

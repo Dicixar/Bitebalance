@@ -55,7 +55,6 @@ public class LoginActivity extends AppCompatActivity {
             // Guardar os dados no SharedPreferences
             SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("USER_ID", String.valueOf(user.getId()));
             editor.putString("USER_NAME", user.getName());
             editor.putString("USER_EMAIL", user.getEmail());
             editor.putBoolean("IS_LOGGED_IN", true); // Marcar como sessão ativa

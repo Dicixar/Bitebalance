@@ -43,7 +43,7 @@
             android:value="osmdroid/cache" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAaHnFRRl_1ysY-r1A39byGwzK8qlGS1_k" />
+            android:value="" />
     </application>
 
 </manifest>

@@ -10,7 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +24,8 @@ public class PaymentActivity extends AppCompatActivity {
     private LinearLayout cartLayout;
     private TextView total;
     private ImageView voltar;
+    private RadioGroup radioGroup;
+    private RadioButton radioButton;
 
 
     @SuppressLint({"MissingInflatedId", "SetTextI18n"})
@@ -57,10 +62,23 @@ public class PaymentActivity extends AppCompatActivity {
             }
             Button pay = findViewById(R.id.pay);
             pay.setOnClickListener(view -> {
-                // Redirecionar para outra atividade (por exemplo, perfil)
-                Intent intent = new Intent(PaymentActivity.this, ProfileActivity.class);
-                startActivity(intent);
-                finish();
+                radioGroup = findViewById(R.id.radioGroup);
+                String paymentMethod = "";
+                if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton1) {
+                    paymentMethod = "Multibanco";
+                    createOrder(userEmail, paymentMethod);
+                }
+                else if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton2) {
+                    paymentMethod = "Cartão de Crédito";
+                    createOrder(userEmail, paymentMethod);
+                }
+                else if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton3) {
+                    paymentMethod = "Giftcard";
+                    createOrder(userEmail, paymentMethod);
+                }
+                else {
+                    Toast.makeText(PaymentActivity.this, "Selecione um método de pagamento", Toast.LENGTH_SHORT).show();
+                }
             });
 
 
@@ -96,5 +114,11 @@ public class PaymentActivity extends AppCompatActivity {
             // Adicionar o item ao layout
             cartLayout.addView(itemView);
         }
+    }
+    public void createOrder(String userEmail, String paymentMethod) {
+        dbHandler.finishOrder(dbHandler.getUserId(userEmail), paymentMethod);
+        Intent intent = new Intent(PaymentActivity.this, ProfileActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

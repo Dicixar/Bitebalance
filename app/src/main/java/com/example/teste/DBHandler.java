@@ -323,36 +323,25 @@ public class DBHandler extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public User getUserByEmail(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE email = ?", new String[]{email});
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT * FROM users WHERE email = ?", new String[]{email});
 
-        if (cursor.moveToFirst()) {
-            int nameIndex = cursor.getColumnIndex("username");
-            int emailIndex = cursor.getColumnIndex("email");
-            int passwordIndex = cursor.getColumnIndex("password");
-            int moradaIndex = cursor.getColumnIndex("address");
-            int tlmIndex = cursor.getColumnIndex("phone");
+            if (cursor.moveToFirst()) {
+                String nome = cursor.getString(cursor.getColumnIndex("username"));
+                String emailUsuario = cursor.getString(cursor.getColumnIndex("email"));
+                String password = cursor.getString(cursor.getColumnIndex("password"));
+                String morada = cursor.getString(cursor.getColumnIndex("address"));
+                String phone = cursor.getString(cursor.getColumnIndex("phone"));
 
-            // Verifica se as colunas existem antes de aceder
-            if (nameIndex == -1 || emailIndex == -1 || passwordIndex == -1) {
-                cursor.close();
-                db.close();
-                throw new IllegalArgumentException("Column not found in database");
+                return new User(nome, emailUsuario, morada, phone);
             }
-
-            String nome = cursor.getString(nameIndex);
-            String emailUsuario = cursor.getString(emailIndex);
-            String password = cursor.getString(passwordIndex);
-            String morada = cursor.getString(moradaIndex);
-            String phone = cursor.getString(tlmIndex);
-
-            User user = new User(nome, emailUsuario, morada, phone);
-            cursor.close();
-            db.close();
-            return user;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            // NÃO fechar o db aqui, pois pode ser usado em outros métodos
         }
-
-        cursor.close();
-        db.close();
         return null;
     }
 
@@ -547,62 +536,70 @@ public class DBHandler extends SQLiteOpenHelper {
                     cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_ID))
             );
             cursor.close();
-            db.close();
+            // Do not close the database here, as it may still be needed by the caller.
             return meal;
         }
 
         cursor.close();
-        db.close();
+        // Do not close the database here, as it may still be needed by the caller.
         return null;
     }
 
     @SuppressLint("Range")
     public List<CartItem> getCartItems(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM cart WHERE user_id = ? AND status = ?",
-                new String[]{String.valueOf(userId), "pending"});
-
+        Cursor cursor = null;
         List<CartItem> cartItems = new ArrayList<>();
 
-        if (cursor.moveToFirst()) {
-            do {
-                int cartItemId = cursor.getInt(cursor.getColumnIndexOrThrow(CART_ID));
-                int mealId = cursor.getInt(cursor.getColumnIndexOrThrow(CART_MEAL_ID));
-                int quantity = cursor.getInt(cursor.getColumnIndexOrThrow(CART_QUANTITY));
-                // Aqui, vamos buscar os detalhes da refeição no banco de dados
-                Meal meal = getMealById(mealId);
-                if (meal != null) {
-                    CartItem cartItem = new CartItem(cartItemId, meal, quantity);
-                    cartItems.add(cartItem);
-                }
-            } while (cursor.moveToNext());
+        try {
+            cursor = db.rawQuery("SELECT * FROM cart WHERE user_id = ? AND status = ?",
+                    new String[]{String.valueOf(userId), "pending"});
+
+            if (cursor.moveToFirst()) {
+                do {
+                    int cartItemId = cursor.getInt(cursor.getColumnIndexOrThrow(CART_ID));
+                    int mealId = cursor.getInt(cursor.getColumnIndexOrThrow(CART_MEAL_ID));
+                    int quantity = cursor.getInt(cursor.getColumnIndexOrThrow(CART_QUANTITY));
+
+                    Meal meal = getMealById(mealId);
+                    if (meal != null) {
+                        CartItem cartItem = new CartItem(cartItemId, meal, quantity);
+                        cartItems.add(cartItem);
+                    }
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            // Do not close the database here, as it may still be needed by the caller.
         }
-        cursor.close();
-        db.close();
         return cartItems;
     }
 
     @SuppressLint("Range")
     public double getTotalCart(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
-
-        // A consulta junta a tabela do carrinho e a tabela de refeições para pegar o preço de cada refeição
-        String query = "SELECT SUM(c." + CART_QUANTITY + " * m." + MEAL_PRICE + ") AS total " +
-                "FROM " + CART_TABLE + " c " +
-                "JOIN " + MEALS_TABLE + " m ON c." + CART_MEAL_ID + " = m." + MEAL_ID +
-                " WHERE c." + CART_USER_ID + " = ? AND c." + CART_STATUS + " = ?";
-
-        Cursor cursor = db.rawQuery(query, new String[] { String.valueOf(userId), "pending" });
-
+        Cursor cursor = null;
         double total = 0.0;
 
-        if (cursor.moveToFirst()) {
-            // Se houver resultados, pega o total calculado
-            total = cursor.getDouble(cursor.getColumnIndex("total"));
-        }
+        try {
+            String query = "SELECT SUM(c." + CART_QUANTITY + " * m." + MEAL_PRICE + ") AS total " +
+                    "FROM " + CART_TABLE + " c " +
+                    "JOIN " + MEALS_TABLE + " m ON c." + CART_MEAL_ID + " = m." + MEAL_ID +
+                    " WHERE c." + CART_USER_ID + " = ? AND c." + CART_STATUS + " = ?";
 
-        cursor.close();
-        db.close();
+            cursor = db.rawQuery(query, new String[]{String.valueOf(userId), "pending"});
+
+            if (cursor.moveToFirst()) {
+                total = cursor.getDouble(cursor.getColumnIndex("total"));
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            // NÃO fechar o db aqui, pois pode ser usado em outros métodos
+        }
 
         return total;
     }
@@ -613,6 +610,39 @@ public class DBHandler extends SQLiteOpenHelper {
                 new String[] { String.valueOf(userId), "pending" });
         db.close();
     }
+
+    public void finishOrder(int userId, String paymentMethod) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        try {
+            List<CartItem> cartItems = getCartItems(userId);
+
+            for (CartItem cartItem : cartItems) {
+                ContentValues orderValues = new ContentValues();
+                orderValues.put(ORDER_USER_ID, userId);
+                orderValues.put(ORDER_MEAL_ID, cartItem.getMeal().getId());
+                orderValues.put(ORDER_QUANTITY, cartItem.getQuantity());
+                orderValues.put(ORDER_STATUS, "ordered");
+
+                long orderId = db.insert(ORDERS_TABLE, null, orderValues);
+
+                ContentValues paymentValues = new ContentValues();
+                paymentValues.put(PAYMENT_ORDER_ID, orderId);
+                paymentValues.put(PAYMENT_AMOUNT, cartItem.getTotalPrice());
+                paymentValues.put(PAYMENT_METHOD, paymentMethod);
+                paymentValues.put(PAYMENT_DATE, "CURRENT_TIMESTAMP");
+                db.insert(PAYMENTS_TABLE, null, paymentValues);
+            }
+
+            ContentValues cartValues = new ContentValues();
+            cartValues.put(CART_STATUS, "ordered");
+            db.update(CART_TABLE, cartValues, CART_USER_ID + " = ? AND " + CART_STATUS + " = ?",
+                    new String[]{String.valueOf(userId), "pending"});
+        } finally {
+            db.close();
+        }
+    }
+
 
 
 }

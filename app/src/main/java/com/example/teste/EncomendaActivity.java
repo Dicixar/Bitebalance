@@ -123,22 +123,20 @@ public class EncomendaActivity extends AppCompatActivity implements OnMapReadyCa
     private void displayCartItems(String userEmail) {
         List<DBHandler.CartItem> cartItems = dbHandler.getCartItems(dbHandler.getUserId(userEmail));
 
+        // Limpa o layout antes de adicionar os novos itens
+        cartLayout.removeAllViews();
 
         for (DBHandler.CartItem cartItem : cartItems) {
-            if (cartItems.contains(cartItem)) {
-                cartLayout.removeAllViews();
+            // Criar um item de layout para cada item do carrinho
+            View itemView = getLayoutInflater().inflate(R.layout.cart_item, cartLayout, false);
 
-                // Criar um item de layout para cada item do carrinho
-                View itemView = getLayoutInflater().inflate(R.layout.cart_item, cartLayout, false);
+            TextView mealName = itemView.findViewById(R.id.nome);
+            TextView mealPrice = itemView.findViewById(R.id.preco);
 
-                TextView mealName = itemView.findViewById(R.id.nome);
-                TextView mealPrice = itemView.findViewById(R.id.preco);
+            mealName.setText(cartItem.getMeal().getName());
+            mealPrice.setText("Quantidade: " + cartItem.getQuantity() + "   €" + cartItem.getTotalPrice());
 
-                mealName.setText(cartItem.getMeal().getName());
-                mealPrice.setText("Quantidade: " + cartItem.getQuantity() + "   €" + cartItem.getTotalPrice());
-
-                cartLayout.addView(itemView);
-            }
+            cartLayout.addView(itemView);
         }
     }
 

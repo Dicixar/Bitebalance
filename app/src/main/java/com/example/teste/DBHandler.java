@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,6 +151,42 @@ public class DBHandler extends SQLiteOpenHelper {
 
         public double getTotalPrice() {
             return meal.getPrice() * quantity;
+        }
+    }
+
+    public static class Order {
+        private int id;
+        private Meal meal;
+        private int quantity;
+        private String status;
+        private String date;
+
+        public Order(int id, Meal meal, int quantity, String status, String date) {
+            this.id = id;
+            this.meal = meal;
+            this.quantity = quantity;
+            this.status = status;
+            this.date = date;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public Meal getMeal() {
+            return meal;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public String getDate() {
+            return date;
         }
     }
 
@@ -641,6 +678,35 @@ public class DBHandler extends SQLiteOpenHelper {
         } finally {
             db.close();
         }
+    }
+
+    @SuppressLint("Range")
+    public List<Order> getOrdersByUserId(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<Order> orders = new ArrayList<>();
+
+        // Query para buscar as encomendas do usuário
+        String query = "SELECT * FROM " + ORDERS_TABLE + " WHERE " + ORDER_USER_ID + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                int orderId = cursor.getInt(cursor.getColumnIndex(ORDER_ID));
+                int mealId = cursor.getInt(cursor.getColumnIndex(ORDER_MEAL_ID));
+                int quantity = cursor.getInt(cursor.getColumnIndex(ORDER_QUANTITY));
+                String status = cursor.getString(cursor.getColumnIndex(ORDER_STATUS));
+                String orderDate = cursor.getString(cursor.getColumnIndex(ORDER_DATE));
+
+                Meal meal = getMealById(mealId);
+
+                Order order = new Order(orderId, meal, quantity, status, orderDate);
+                orders.add(order);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return orders;
     }
 
 

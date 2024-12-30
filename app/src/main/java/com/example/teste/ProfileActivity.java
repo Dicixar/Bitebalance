@@ -7,12 +7,19 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -21,8 +28,8 @@ public class ProfileActivity extends AppCompatActivity {
     private Button btn1;
     private EditText nome, phone, morada;
     private TextView email, nome1;
+    private LinearLayout ordersLayout;
 
-    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
         btn1 = findViewById(R.id.atualizar);
         btn2 = findViewById(R.id.btn_back);
         nome1 = findViewById(R.id.nome1);
+        ordersLayout = findViewById(R.id.orders_layout); // Adicione este ID no layout
         dbHandler = new DBHandler(this);
 
         if (!isLoggedIn) {
@@ -46,10 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else {
-            // Caso a sessão exista, carrega os dados do utilizador
             String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
-
-            // Obtém os detalhes do utilizador da base de dados
             DBHandler.User user = dbHandler.getUserDetails(userEmail);
 
             if (user != null) {
@@ -59,9 +64,10 @@ public class ProfileActivity extends AppCompatActivity {
                 morada.setText(user.getMorada());
                 nome1.setText(user.getName());
 
+                // Carrega as encomendas do usuário
+                loadOrders(dbHandler.getUserId(userEmail));
             }
         }
-
         btn1.setOnClickListener(view -> {
             String nome1 = String.valueOf(nome.getText());
             String email1 = String.valueOf(email.getText());
@@ -87,6 +93,51 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+    }
+
+
+    @SuppressLint("SetTextI18n")
+    private void loadOrders(int userId) {
+        List<DBHandler.Order> orders = dbHandler.getOrdersByUserId(userId);
+
+        // Limpa o layout antes de adicionar novas encomendas
+        ordersLayout.removeAllViews();
+
+        for (DBHandler.Order order : orders) {
+            // Infla o layout de cada encomenda
+            View orderView = getLayoutInflater().inflate(R.layout.item_setting_option, ordersLayout, false);
+
+            // Preenche os dados da encomenda
+            TextView orderIdTextView = orderView.findViewById(R.id.order_id);
+            TextView orderDateTextView = orderView.findViewById(R.id.order_date);
+            TextView itemNameTextView = orderView.findViewById(R.id.item_name);
+            TextView itemQuantityTextView = orderView.findViewById(R.id.item_quantity);
+            TextView itemPriceTextView = orderView.findViewById(R.id.item_price);
+
+            orderIdTextView.setText("Order #" + order.getId());
+            orderDateTextView.setText("Date: " + order.getDate());
+            itemNameTextView.setText("Item: " + order.getMeal().getName());
+            itemQuantityTextView.setText("Quantity: " + order.getQuantity());
+            itemPriceTextView.setText("Price: €" + (order.getMeal().getPrice() * order.getQuantity()));
+
+            // Adiciona a encomenda ao layout
+            ordersLayout.addView(orderView);
+
+            // Configura o clique para expandir/recolher os detalhes da encomenda
+            LinearLayout headerLayout = orderView.findViewById(R.id.header_layout);
+            LinearLayout expandableLayout = orderView.findViewById(R.id.expandable_layout);
+            ImageView expandIcon = orderView.findViewById(R.id.expand_icon);
+
+            headerLayout.setOnClickListener(v -> {
+                if (expandableLayout.getVisibility() == View.GONE) {
+                    expandableLayout.setVisibility(View.VISIBLE);
+                    expandIcon.setRotation(90); // Gira o ícone para baixo
+                } else {
+                    expandableLayout.setVisibility(View.GONE);
+                    expandIcon.setRotation(270); // Gira o ícone para cima
+                }
+            });
+        }
     }
 
     private void setupBottomNavigation() {

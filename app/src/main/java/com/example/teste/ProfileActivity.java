@@ -171,7 +171,8 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
     }
     private void navigateToHealth() {
-        // Handle health navigation
+        Intent intent = new Intent(ProfileActivity.this, PlanoActivity.class);
+        startActivity(intent);
     }
     private void navigateToProfile() {
         // Handle profile navigation

@@ -94,10 +94,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
     private void navigateToHealth() {
-        // Handle health navigation
+        Intent intent = new Intent(MainActivity.this, PlanoActivity.class);
+        startActivity(intent);
     }
     private void navigateToProfile() {
-        // Handle profile navigation
         Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
         startActivity(intent);
     }

@@ -6,11 +6,11 @@
         android:title="Home"/>
     <item
         android:id="@+id/navigation_simulator"
-        android:icon="@drawable/ic_simulator"
+        android:icon="@drawable/scale"
         android:title="Simulador"/>
     <item
         android:id="@+id/navigation_health"
-        android:icon="@drawable/ic_heart"
+        android:icon="@drawable/meal"
         android:title="Saúde"/>
     <item
         android:id="@+id/navigation_profile"

@@ -39,6 +39,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.google.maps)
     implementation(libs.play.services.location)
+    implementation(libs.okhttp)
+    implementation(libs.json)
 
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)

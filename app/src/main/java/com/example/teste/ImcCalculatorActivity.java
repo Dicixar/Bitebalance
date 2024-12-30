@@ -134,7 +134,8 @@ public class ImcCalculatorActivity extends AppCompatActivity {
     }
 
     private void navigateToHealth() {
-        // Handle health navigation
+        Intent intent = new Intent(ImcCalculatorActivity.this, PlanoActivity.class);
+        startActivity(intent);
     }
 
     private void navigateToProfile() {

@@ -2,7 +2,6 @@ package com.example.teste;
 
 
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,8 +23,6 @@ public class PaymentActivity extends AppCompatActivity {
     private TextView total;
     private ImageView voltar;
     private RadioGroup radioGroup;
-    private RadioButton radioButton;
-
 
     @SuppressLint({"MissingInflatedId", "SetTextI18n"})
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +34,7 @@ public class PaymentActivity extends AppCompatActivity {
         // Verificar a sessão do utilizador
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("IS_LOGGED_IN", false);
+        String deliveryAddress = getIntent().getStringExtra("DELIVERY_ADDRESS");
 
         if (!isLoggedIn) {
             // Se não estiver logado, redireciona para o login
@@ -58,7 +55,7 @@ public class PaymentActivity extends AppCompatActivity {
             if (user != null) {
                 nome.setText(user.getName());
                 email.setText(user.getEmail());
-                morada.setText(user.getMorada());
+                morada.setText(deliveryAddress);
             }
             Button pay = findViewById(R.id.pay);
             pay.setOnClickListener(view -> {
@@ -91,20 +88,18 @@ public class PaymentActivity extends AppCompatActivity {
 
         }
     }
+
     @SuppressLint("SetTextI18n")
     private void displayCartItems(String userEmail) {
         cartLayout = findViewById(R.id.product_list1);
 
         List<DBHandler.CartItem> cartItems = dbHandler.getCartItems(dbHandler.getUserId(userEmail));
 
-        // Limpar layout antes de adicionar novos itens
         cartLayout.removeAllViews();
 
         for (DBHandler.CartItem cartItem : cartItems) {
-            // Criar um item de layout para cada item do carrinho
             View itemView = getLayoutInflater().inflate(R.layout.cart_item, cartLayout, false);
 
-            // Preencher com as informações da refeição
             TextView mealName = itemView.findViewById(R.id.nome);
             TextView mealPrice = itemView.findViewById(R.id.preco);
 
@@ -115,6 +110,7 @@ public class PaymentActivity extends AppCompatActivity {
             cartLayout.addView(itemView);
         }
     }
+
     public void createOrder(String userEmail, String paymentMethod) {
         dbHandler.finishOrder(dbHandler.getUserId(userEmail), paymentMethod);
         Intent intent = new Intent(PaymentActivity.this, ProfileActivity.class);

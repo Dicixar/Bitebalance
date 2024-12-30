@@ -37,7 +37,8 @@ dependencies {
     implementation(libs.cardview)
     implementation(libs.constraintlayout)
     implementation(libs.material)
-    implementation(libs.osmdroid)
+    implementation(libs.google.maps)
+    implementation(libs.play.services.location)
 
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)

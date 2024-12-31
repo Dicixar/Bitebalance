@@ -26,8 +26,8 @@
                 android:src="@drawable/ic_search"
                 android:layout_marginEnd="8dp"/>
 
-            <!-- Caixa de texto para pesquisa -->
             <EditText
+                android:id="@+id/search_edit_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

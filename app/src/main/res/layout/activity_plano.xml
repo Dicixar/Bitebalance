@@ -99,7 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
-                android:hint="Ex: 175"
+                android:hint="Ex: 1.75"
                 android:padding="12dp" />
 
             <!-- Campo para selecionar o Objetivo -->

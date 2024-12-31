@@ -6,7 +6,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -202,6 +201,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String ORDERS_TABLE = "orders";
     private static final String PAYMENTS_TABLE = "payments";
     private static final String CART_TABLE = "cart";
+    private static final String BMI_TABLE = "bmi";
 
     // Users table columns
     private static final String USER_ID = "id";
@@ -247,12 +247,16 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String CART_STATUS = "status";
     private static final String CART_DATE = "cart_date";
 
+    // Bmi table columns
+    private static final String BMI_ID = "id";
+    private static final String BMI_USER_ID = "user_id";
+    private static final String BMI_WEIGHT = "weight";
+    private static final String BMI_HEIGHT = "height";
+
     // Constructor
     public DBHandler(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
-
-
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -311,6 +315,15 @@ public class DBHandler extends SQLiteOpenHelper {
                 + CART_DATE + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
                 + "FOREIGN KEY (" + CART_USER_ID + ") REFERENCES " + USERS_TABLE + "(" + USER_ID + ") ON DELETE CASCADE, "
                 + "FOREIGN KEY (" + CART_MEAL_ID + ") REFERENCES " + MEALS_TABLE + "(" + MEAL_ID + ") ON DELETE CASCADE)";
+
+        String createBmiTable = "CREATE TABLE " + BMI_TABLE + " ("
+                + BMI_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + BMI_USER_ID + " INTEGER, "
+                + BMI_WEIGHT + " DECIMAL(10, 2), "
+                + BMI_HEIGHT + " DECIMAL(10, 2), "
+                + "FOREIGN KEY (" + BMI_USER_ID + ") REFERENCES " + USERS_TABLE + "(" + USER_ID + ") ON DELETE CASCADE)";
+
+
         // Execute the SQL statements to create tables
         db.execSQL(createUsersTable);
         db.execSQL(createUserProfilesTable);
@@ -318,6 +331,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL(createOrdersTable);
         db.execSQL(createPaymentsTable);
         db.execSQL(createCartTable);
+        db.execSQL(createBmiTable);
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -328,6 +342,8 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + ORDERS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + PAYMENTS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + CART_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + BMI_TABLE);
+
         onCreate(db);
     }
 
@@ -709,6 +725,63 @@ public class DBHandler extends SQLiteOpenHelper {
         return orders;
     }
 
+    @SuppressLint("Recycle")
+    public void addBmi(int userId, double weight, double height) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + BMI_TABLE + " WHERE " + BMI_USER_ID + " = ?",
+                new String[]{String.valueOf(userId)});
 
+        if (cursor.moveToFirst()) {
+            cursor = db.rawQuery("UPDATE " + BMI_TABLE + " SET " + BMI_WEIGHT + " = ?, " + BMI_HEIGHT + " = ? WHERE " + BMI_USER_ID + " = ?",
+                    new String[]{String.valueOf(weight), String.valueOf(height), String.valueOf(userId)});
+            cursor.close();
+            db.close();
+            return;
+        }
+        else {
+            cursor.close();
+            db.close();
+
+            SQLiteDatabase db1 = this.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            values.put(BMI_USER_ID, userId);
+            values.put(BMI_WEIGHT, weight);
+            values.put(BMI_HEIGHT, height);
+
+            db1.insert(BMI_TABLE, null, values);
+            db1.close();
+        }
+    }
+
+    @SuppressLint("Range")
+    public double getBmi1(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + BMI_TABLE + " WHERE " + BMI_USER_ID + " = ?",
+                new String[]{String.valueOf(userId)});
+
+        if (cursor.moveToFirst()) {
+            double weight = cursor.getDouble(cursor.getColumnIndex(BMI_WEIGHT));
+            cursor.close();
+            db.close();
+            return weight;
+        }
+        return 0;
+    }
+
+    @SuppressLint("Range")
+    public double getBmi(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + BMI_TABLE + " WHERE " + BMI_USER_ID + " = ?",
+                new String[]{String.valueOf(userId)});
+
+        if (cursor.moveToFirst()) {
+            double height = cursor.getDouble(cursor.getColumnIndex(BMI_HEIGHT));
+            cursor.close();
+            db.close();
+            return height;
+        }
+        return 0;
+    }
 
 }

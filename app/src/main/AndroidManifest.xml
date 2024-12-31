@@ -35,13 +35,6 @@
         <activity android:name=".ItemActivity"/>
         <activity android:name=".PaymentActivity"/>
         <activity android:name=".PlanoActivity"/>
-
-        <meta-data
-            android:name="osmdroid.basePath"
-            android:value="osmdroid" />
-        <meta-data
-            android:name="osmdroid.cachePath"
-            android:value="osmdroid/cache" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="" />

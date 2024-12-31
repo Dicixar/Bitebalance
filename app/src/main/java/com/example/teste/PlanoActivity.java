@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.content.SharedPreferences;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -18,6 +20,7 @@ public class PlanoActivity extends AppCompatActivity {
     private Spinner spinnerObjetivo;
     private Button btnGerarPlano;
     private TextView resultadoPlano;
+    private DBHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,15 @@ public class PlanoActivity extends AppCompatActivity {
         spinnerObjetivo = findViewById(R.id.spinnerObjetivo);
         btnGerarPlano = findViewById(R.id.btnGerarPlano);
         resultadoPlano = findViewById(R.id.resultadoPlano);
+        dbHandler = new DBHandler(this);
+        SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
+        String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
+
+        double weight = dbHandler.getBmi(dbHandler.getUserId(userEmail));
+        double height = dbHandler.getBmi1(dbHandler.getUserId(userEmail));
+
+        inputPeso.setText(String.valueOf(weight));
+        inputAltura.setText(String.valueOf(height));
 
         // Definindo os valores do Spinner diretamente no código
         String[] objetivos = {"Perder Peso", "Ganhar Massa Muscular", "Manter Peso", "Aumentar Energia e Disposição", "Reduzir o Estresse e Ansiedade", "Reduzir o Colesterol",};

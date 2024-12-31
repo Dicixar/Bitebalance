@@ -2,6 +2,7 @@ package com.example.teste;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,11 +16,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ImcCalculatorActivity extends AppCompatActivity {
 
+    private DBHandler dbHandler;
+
     @Override
     @SuppressLint({"MissingInflatedId", "LocalSuppress"})
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_imc_calculator);
+        SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
+        String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
+
 
         // Referências aos componentes do layout
         EditText inputHeight = findViewById(R.id.input_height);
@@ -30,16 +36,27 @@ public class ImcCalculatorActivity extends AppCompatActivity {
         ImageView imcPointer = findViewById(R.id.imcPointer);
         TextView textClassification = findViewById(R.id.text_classification);
 
+        dbHandler = new DBHandler(this);
+        double weight1 = dbHandler.getBmi(dbHandler.getUserId(userEmail));
+        double height1 = dbHandler.getBmi1(dbHandler.getUserId(userEmail));
+        if (weight1 != 0 || height1 != 0) {
+            inputHeight.setText(String.valueOf(height1));
+            inputWeight.setText(String.valueOf(weight1));
+        }
+
         // Configuração do botão de calcular
         btnCalculate.setOnClickListener(v -> {
+
             String heightInput = inputHeight.getText().toString();
             String weightInput = inputWeight.getText().toString();
+
 
             // Verificar se os campos estão preenchidos corretamente
             if (!heightInput.isEmpty() && !weightInput.isEmpty()) {
                 try {
                     double height = Double.parseDouble(heightInput);
                     double weight = Double.parseDouble(weightInput);
+                    dbHandler.addBmi(dbHandler.getUserId(userEmail), weight, height);
 
                     if (height > 0) {
                         // Cálculo do IMC

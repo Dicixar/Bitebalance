@@ -23,6 +23,9 @@ public class ImcCalculatorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_imc_calculator);
+        setupBottomNavigation();
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setSelectedItemId(R.id.navigation_simulator);
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
         String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
 
@@ -117,8 +120,7 @@ public class ImcCalculatorActivity extends AppCompatActivity {
                 Toast.makeText(this, "Por favor, preencha todos os campos.", Toast.LENGTH_SHORT).show();
             }
         });
-
-        setupBottomNavigation();
+        
     }
 
     private void setupBottomNavigation() {

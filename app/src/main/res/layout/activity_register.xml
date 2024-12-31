@@ -24,10 +24,13 @@
         android:layout_marginBottom="16dp"
         app:startIconDrawable="@drawable/ic_person"
         app:boxStrokeColor="@color/brown"
+        app:hintTextColor="@color/black"
+        android:textColor="@color/black"
         android:id="@+id/nome">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
+            android:textColor="@color/black"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -37,12 +40,15 @@
         android:layout_height="wrap_content"
         android:hint="Email Address"
         android:layout_marginBottom="16dp"
+        android:textColor="@color/black"
         app:startIconDrawable="@drawable/ic_email"
-        app:boxStrokeColor="#A3D26F"
+        app:boxStrokeColor="@color/brown"
+        app:hintTextColor="@color/black"
         android:id="@+id/email">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
+            android:textColor="@color/black"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -52,14 +58,17 @@
         android:layout_height="wrap_content"
         android:hint="Password"
         android:layout_marginBottom="16dp"
+        android:textColor="@color/black"
         app:startIconDrawable="@drawable/ic_lock"
         app:endIconMode="password_toggle"
-        app:boxStrokeColor="#A3D26F"
+        app:hintTextColor="@color/black"
+        app:boxStrokeColor="@color/brown"
         android:id="@+id/pass">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,14 +78,18 @@
         android:layout_height="wrap_content"
         android:hint="Retype Password"
         android:layout_marginBottom="16dp"
+        android:textColor="@color/black"
+        app:hintTextColor="@color/black"
         app:startIconDrawable="@drawable/ic_lock"
         app:endIconMode="password_toggle"
-        app:boxStrokeColor="#A3D26F"
+        app:boxStrokeColor="@color/brown"
+
         android:id="@+id/repass">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 

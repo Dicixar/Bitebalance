@@ -3,7 +3,7 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home"
-        android:title="Home"/>
+        android:title="Inicio"/>
     <item
         android:id="@+id/navigation_simulator"
         android:icon="@drawable/scale"
@@ -15,5 +15,5 @@
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/ic_profile"
-        android:title="Perfil"/>
+        android:title="Perfil" />
 </menu>

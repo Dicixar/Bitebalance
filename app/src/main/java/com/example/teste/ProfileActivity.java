@@ -35,6 +35,8 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         setupBottomNavigation();
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setSelectedItemId(R.id.navigation_profile);
 
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("IS_LOGGED_IN", false);

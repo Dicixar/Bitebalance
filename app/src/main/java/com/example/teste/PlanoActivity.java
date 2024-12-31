@@ -27,6 +27,8 @@ public class PlanoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plano);
         setupBottomNavigation();
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setSelectedItemId(R.id.navigation_health);
 
         inputPeso = findViewById(R.id.inputPeso);
         inputAltura = findViewById(R.id.inputAltura);

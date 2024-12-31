@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/background_light">
+    android:background="@color/white">
 
-    <!-- Search Bar -->
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         app:cardCornerRadius="8dp"
-        app:cardElevation="4dp">
+        app:cardElevation="4dp"
+        android:backgroundTint="@color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,6 +21,7 @@
             android:gravity="center_vertical"
             android:padding="8dp">
 
+            <!-- Ícone de pesquisa -->
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -28,11 +29,22 @@
                 android:layout_marginEnd="8dp"/>
 
             <EditText
-                android:layout_width="match_parent"
+                android:id="@+id/search_edit_text"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:background="@null"
+                android:textColorHint="@color/black"
                 android:hint="Frango, Salada, etc..."
                 android:textSize="14sp"/>
+
+            <!-- Imagem ao lado da barra de pesquisa -->
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/shoppingcart_com"
+                android:id="@+id/carrinho">
+            </ImageView>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -73,6 +85,8 @@
                     android:hint="Ex: 1.86"
                     android:inputType="numberDecimal"
                     android:minHeight="48dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
                     android:backgroundTint="@android:color/holo_blue_light"
                     android:padding="8dp"
                     android:elevation="4dp" />
@@ -99,6 +113,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Ex: 69.7"
                     android:inputType="numberDecimal"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/black"
                     android:minHeight="48dp"
                     android:backgroundTint="@android:color/holo_blue_light"
                     android:padding="8dp"
@@ -126,6 +142,8 @@
                 android:layout_height="wrap_content"
                 android:hint="80.0"
                 android:inputType="numberDecimal"
+                android:textColor="@android:color/black"
+                android:textColorHint="@color/black"
                 android:minHeight="48dp"
                 android:backgroundTint="@android:color/holo_blue_light"
                 android:padding="8dp"
@@ -189,12 +207,13 @@
 
     </LinearLayout>
 
-    <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/bottom_nav_menu"
-        app:labelVisibilityMode="labeled"
-        android:backgroundTint="@android:color/holo_blue_dark" />
+        android:background="@color/white"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
+
+        app:menu="@menu/bottom_nav_menu"/>
 </LinearLayout>

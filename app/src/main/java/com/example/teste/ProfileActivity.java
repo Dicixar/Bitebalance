@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.util.Log;
@@ -47,11 +49,11 @@ public class ProfileActivity extends AppCompatActivity {
         btn1 = findViewById(R.id.atualizar);
         btn2 = findViewById(R.id.btn_back);
         nome1 = findViewById(R.id.nome1);
-        ordersLayout = findViewById(R.id.orders_layout); // Adicione este ID no layout
+        ordersLayout = findViewById(R.id.orders_layout);
         dbHandler = new DBHandler(this);
 
+
         if (!isLoggedIn) {
-            // Se não estiver logado, redireciona para o login
             Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
@@ -66,7 +68,6 @@ public class ProfileActivity extends AppCompatActivity {
                 morada.setText(user.getMorada());
                 nome1.setText(user.getName());
 
-                // Carrega as encomendas do usuário
                 loadOrders(dbHandler.getUserId(userEmail));
             }
         }
@@ -76,7 +77,6 @@ public class ProfileActivity extends AppCompatActivity {
             String morada1 = String.valueOf(morada.getText());
             String phone1 = String.valueOf(phone.getText());
 
-            // Atualiza os dados do utilizador
             dbHandler.editProfile(nome1, email1, morada1, phone1);
             Toast.makeText(ProfileActivity.this, "Atualizado com Sucesso", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(ProfileActivity.this, ProfileActivity.class);
@@ -102,25 +102,31 @@ public class ProfileActivity extends AppCompatActivity {
     private void loadOrders(int userId) {
         List<DBHandler.Order> orders = dbHandler.getOrdersByUserId(userId);
 
-        // Limpa o layout antes de adicionar novas encomendas
         ordersLayout.removeAllViews();
 
         for (DBHandler.Order order : orders) {
-            // Infla o layout de cada encomenda
             View orderView = getLayoutInflater().inflate(R.layout.item_setting_option, ordersLayout, false);
 
-            // Preenche os dados da encomenda
             TextView orderIdTextView = orderView.findViewById(R.id.order_id);
             TextView orderDateTextView = orderView.findViewById(R.id.order_date);
             TextView itemNameTextView = orderView.findViewById(R.id.item_name);
             TextView itemQuantityTextView = orderView.findViewById(R.id.item_quantity);
             TextView itemPriceTextView = orderView.findViewById(R.id.item_price);
+            @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button orderStatusButton = orderView.findViewById(R.id.status);
 
-            orderIdTextView.setText("Order #" + order.getId());
-            orderDateTextView.setText("Date: " + order.getDate());
+            orderIdTextView.setText("Encomenda #" + order.getId());
+            orderDateTextView.setText("Data: " + order.getDate());
             itemNameTextView.setText("Item: " + order.getMeal().getName());
-            itemQuantityTextView.setText("Quantity: " + order.getQuantity());
-            itemPriceTextView.setText("Price: €" + (order.getMeal().getPrice() * order.getQuantity()));
+            itemQuantityTextView.setText("Quantidade: " + order.getQuantity());
+            itemPriceTextView.setText("Preço: €" + (order.getMeal().getPrice() * order.getQuantity()));
+            orderStatusButton.setText(order.getStatus());
+            if (order.getStatus().equals("A entregar")) {
+                orderStatusButton.setBackgroundColor(ContextCompat.getColor(this, R.color.yellow));
+            } else if (order.getStatus().equals("Entregue")) {
+                orderStatusButton.setBackgroundColor(ContextCompat.getColor(this, R.color.green));
+            } else if (order.getStatus().equals("Cancelado")) {
+                orderStatusButton.setBackgroundColor(ContextCompat.getColor(this, R.color.red));
+            }
 
             // Adiciona a encomenda ao layout
             ordersLayout.addView(orderView);
@@ -133,10 +139,10 @@ public class ProfileActivity extends AppCompatActivity {
             headerLayout.setOnClickListener(v -> {
                 if (expandableLayout.getVisibility() == View.GONE) {
                     expandableLayout.setVisibility(View.VISIBLE);
-                    expandIcon.setRotation(90); // Gira o ícone para baixo
+                    expandIcon.setRotation(90);
                 } else {
                     expandableLayout.setVisibility(View.GONE);
-                    expandIcon.setRotation(270); // Gira o ícone para cima
+                    expandIcon.setRotation(270);
                 }
             });
         }
@@ -164,7 +170,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void navigateToHome() {
-        // Handle home navigation
         Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
         startActivity(intent);
     }
@@ -177,8 +182,8 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
     }
     private void navigateToProfile() {
-        // Handle profile navigation
     }
+
     private void logOut() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -190,6 +195,6 @@ public class ProfileActivity extends AppCompatActivity {
         // Redireciona para a página de login
         Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
         startActivity(intent);
-        finish(); // Fecha a ProfileActivity
+        finish();
     }
 }

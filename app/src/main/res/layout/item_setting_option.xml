@@ -34,7 +34,7 @@
                 android:id="@+id/order_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Order #12345"
+                android:text="Encomenda #12345"
                 android:textSize="16sp"
                 android:textColor="#333333" />
 
@@ -46,6 +46,15 @@
                 android:textSize="12sp"
                 android:textColor="#888888" />
         </LinearLayout>
+
+        <Button
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:backgroundTint="@color/green"
+            android:clickable="false"
+            android:id="@+id/status">
+
+        </Button>
 
         <ImageView
             android:id="@+id/expand_icon"

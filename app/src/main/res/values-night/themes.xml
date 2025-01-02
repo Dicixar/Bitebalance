@@ -3,5 +3,7 @@
     <style name="Base.Theme.Teste" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="buttonTint">@drawable/radio_button</item>
     </style>
 </resources>

@@ -13,12 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.MenuView;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,25 +38,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        // Verificar a sessão do utilizador
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("IS_LOGGED_IN", false);
 
         if (!isLoggedIn) {
-            // Se não estiver logado, redireciona para o login
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
-            finish(); // Fecha a MainActivity
+            finish();
         }
         else{
-            // Caso a sessão exista, carrega os dados do utilizador
             String userName = sharedPreferences.getString("USER_NAME", "Guest");
             String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
             setupBottomNavigation();
             setupFoodItems();
         }
 
-        searchEditText = findViewById(R.id.search_edit_text); // Certifique-se de que o ID está correto
+        searchEditText = findViewById(R.id.search_edit_text);
         foodcontainer = findViewById(R.id.foodcontainer);
 
         // Configura o TextWatcher para a barra de pesquisa

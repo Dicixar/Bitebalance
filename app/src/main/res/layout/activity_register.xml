@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Let's\nCreate\nYour\nAccount"
+        android:text="Vamos\nCriar\na sua\nConta"
         android:textSize="28sp"
         android:textColor="@color/green"
         android:fontFamily="sans-serif-medium"
@@ -20,7 +20,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Full Name"
+        android:hint="Nome Completo"
         android:layout_marginBottom="16dp"
         app:startIconDrawable="@drawable/ic_person"
         app:boxStrokeColor="@color/brown"
@@ -38,7 +38,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email Address"
+        android:hint="Email"
         android:layout_marginBottom="16dp"
         android:textColor="@color/black"
         app:startIconDrawable="@drawable/ic_email"
@@ -76,7 +76,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Retype Password"
+        android:hint="Reescreva a Password"
         android:layout_marginBottom="16dp"
         android:textColor="@color/black"
         app:hintTextColor="@color/black"
@@ -104,13 +104,13 @@
             android:id="@+id/checkbox_terms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="I agree to the "
+            android:text="Eu aceito os "
             android:textColor="#333333" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Terms and Privacy"
+            android:text="Termos e Condições"
             android:textColor="@color/brown"
             android:clickable="true"
             android:textStyle="bold" />
@@ -123,7 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:backgroundTint="@color/green"
-        android:text="Sign Up"
+        android:text="Criar Conta"
         android:textColor="#FFFFFF" />
 
     <!-- Sign In Link -->
@@ -133,6 +133,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:text="Have an account? Sign In"
+        android:text="Tem uma Conta? Faça Login"
         android:textColor="@color/brown" />
 </LinearLayout>

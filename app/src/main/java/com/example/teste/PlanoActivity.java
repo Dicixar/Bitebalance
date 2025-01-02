@@ -45,13 +45,12 @@ public class PlanoActivity extends AppCompatActivity {
         inputPeso.setText(String.valueOf(weight));
         inputAltura.setText(String.valueOf(height));
 
-        // Definindo os valores do Spinner diretamente no código
+        // Define os valores do Spinner
         String[] objetivos = {"Perder Peso", "Ganhar Massa Muscular", "Manter Peso", "Aumentar Energia e Disposição", "Reduzir o Estresse e Ansiedade", "Reduzir o Colesterol",};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, objetivos);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerObjetivo.setAdapter(adapter);
 
-        // Listener do botão para gerar o plano
         btnGerarPlano.setOnClickListener(view -> {
             String peso = inputPeso.getText().toString();
             String altura = inputAltura.getText().toString();
@@ -61,7 +60,6 @@ public class PlanoActivity extends AppCompatActivity {
                 resultadoPlano.setText("Por favor, preencha todos os campos.");
                 resultadoPlano.setVisibility(View.VISIBLE);
             } else {
-                // Lógica para gerar o plano alimentar
                 OpenAIHelper.gerarPlanoAlimentar(peso, altura, objetivo, new OpenAIHelper.Callback() {
                     @Override
                     public void onSuccess(String response) {

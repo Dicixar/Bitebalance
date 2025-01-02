@@ -34,8 +34,13 @@ public class LoginActivity extends AppCompatActivity {
         dbHandler.addAdmin();
 
         btnLogin.setOnClickListener(v -> handleLogin());
-        btnCreateAccount.setOnClickListener(v -> handleCreateAccount());
-        tvForgotPassword.setOnClickListener(v -> handleForgotPassword());
+        btnCreateAccount.setOnClickListener(v -> {
+            Intent intent = new Intent(this, RegisterActivity.class);
+            startActivity(intent);
+        });
+        tvForgotPassword.setOnClickListener(v -> {
+            Toast.makeText(this, "Em Breve...", Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void handleLogin() {
@@ -47,35 +52,23 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Verifica se as credenciais são válidas
         if (dbHandler.validateUserLogin(email, password)) {
             Toast.makeText(this, "Login bem-sucedido!", Toast.LENGTH_SHORT).show();
-            DBHandler.User user = dbHandler.getUserByEmail(email); // Obter os dados do utilizador
-
+            DBHandler.User user = dbHandler.getUserByEmail(email);
             // Guardar os dados no SharedPreferences
             SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("USER_NAME", user.getName());
             editor.putString("USER_EMAIL", user.getEmail());
-            editor.putBoolean("IS_LOGGED_IN", true); // Marcar como sessão ativa
+            editor.putBoolean("IS_LOGGED_IN", true);
             editor.apply();
 
             Intent intent = new Intent(this, MainActivity.class);
             dbHandler.addMeal();
             startActivity(intent);
-            finish(); // Fecha a tela de login
+            finish();
         } else {
             Toast.makeText(this, "Credenciais inválidas. Tente novamente.", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void handleCreateAccount() {
-        // Navegar para a tela de registro
-        Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
-    }
-
-    private void handleForgotPassword() {
-        // Implementar navegação para a tela de recuperação de senha
     }
 }

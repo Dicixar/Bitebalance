@@ -47,17 +47,14 @@ public class EncomendaActivity extends AppCompatActivity implements OnMapReadyCa
         dbHandler = new DBHandler(this);
         cartLayout = findViewById(R.id.product_list);
 
-        // Verificar a sessão do utilizador
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("IS_LOGGED_IN", false);
 
         if (!isLoggedIn) {
-            // Se não estiver logado, redireciona para o login
             Intent intent = new Intent(EncomendaActivity.this, LoginActivity.class);
             startActivity(intent);
-            finish(); // Fecha a MainActivity
+            finish();
         } else {
-            // Caso a sessão exista, carrega os dados do utilizador
             String userName = sharedPreferences.getString("USER_NAME", "Guest");
             String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
             displayCartItems(userEmail);
@@ -96,7 +93,6 @@ public class EncomendaActivity extends AppCompatActivity implements OnMapReadyCa
                             if (address != null) {
                                 Toast.makeText(EncomendaActivity.this, "Local de entrega: " + address, Toast.LENGTH_LONG).show();
 
-                                // Aqui você pode passar o endereço para a PaymentActivity ou salvá-lo no banco de dados
                                 Intent intent = new Intent(EncomendaActivity.this, PaymentActivity.class);
                                 intent.putExtra("DELIVERY_ADDRESS", address);
                                 startActivity(intent);
@@ -123,11 +119,9 @@ public class EncomendaActivity extends AppCompatActivity implements OnMapReadyCa
     private void displayCartItems(String userEmail) {
         List<DBHandler.CartItem> cartItems = dbHandler.getCartItems(dbHandler.getUserId(userEmail));
 
-        // Limpa o layout antes de adicionar os novos itens
         cartLayout.removeAllViews();
 
         for (DBHandler.CartItem cartItem : cartItems) {
-            // Criar um item de layout para cada item do carrinho
             View itemView = getLayoutInflater().inflate(R.layout.cart_item, cartLayout, false);
 
             TextView mealName = itemView.findViewById(R.id.nome);
@@ -143,11 +137,9 @@ public class EncomendaActivity extends AppCompatActivity implements OnMapReadyCa
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
 
-        // Define um ponto inicial no mapa (Exemplo: Lisboa)
         LatLng startPoint = new LatLng(38.736946, -9.142685); // Coordenadas de Lisboa
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPoint, 15));
 
-        // Adiciona um marcador no ponto inicial
         deliveryMarker = googleMap.addMarker(new MarkerOptions()
                 .position(startPoint)
                 .title("Ponto de Entrega")
@@ -156,21 +148,17 @@ public class EncomendaActivity extends AppCompatActivity implements OnMapReadyCa
         // Armazena a localização inicial como selecionada
         selectedLocation = startPoint;
 
-        // Listener para obter a nova posição do marcador
         googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(Marker marker) {
-                // Pode exibir alguma notificação, se necessário
             }
 
             @Override
             public void onMarkerDrag(Marker marker) {
-                // Atualiza dinamicamente enquanto o marcador é arrastado
             }
 
             @Override
             public void onMarkerDragEnd(Marker marker) {
-                // Posição final do marcador
                 selectedLocation = marker.getPosition();
                 Toast.makeText(EncomendaActivity.this, "Local de entrega selecionado: " + selectedLocation.latitude + ", " + selectedLocation.longitude, Toast.LENGTH_SHORT).show();
             }

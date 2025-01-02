@@ -27,7 +27,6 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Inicializa os campos de entrada e a classe DBHandler
         etEmail = findViewById(R.id.email);
         etNome = findViewById(R.id.nome);
         etPassword = findViewById(R.id.pass);
@@ -51,20 +50,17 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
 
-                // Adiciona o utilizador à base de dados
                 dbHandler.addNewUser(nome, email, password);
                 Toast.makeText(RegisterActivity.this, "Account Created!", Toast.LENGTH_SHORT).show();
 
-                // Redireciona para a página de logina após o registo bem-sucedido
                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                finish(); // Fecha a atividade de registo
+                finish();
             }
         });
 
         signInLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navega para a atividade de login
                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             }
         });
@@ -82,57 +78,57 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (email.isEmpty() || password.isEmpty() || nome.isEmpty()) {
-            Toast.makeText(RegisterActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Preencha todos os Campos", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (password.length() < 8) {
-            Toast.makeText(RegisterActivity.this, "Password must be at least 8 characters long", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Password tem de ter no mínimo 8 caracteres", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (!password.matches(".*[A-Z].*")) {
-            Toast.makeText(RegisterActivity.this, "Password must contain at least one uppercase letter", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Password tem de conter pelo menos uma letra maiúscula", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (!password.matches(".*[a-z].*")) {
-            Toast.makeText(RegisterActivity.this, "Password must contain at least one lowercase letter", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Password tem de conter pelo menos uma letra minúscula", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (!password.matches(".*\\d.*")) {
-            Toast.makeText(RegisterActivity.this, "Password must contain at least one digit", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Password tem de conter pelo menos um número", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (!password.matches(".*[!@#$%^&*()].*")) {
-            Toast.makeText(RegisterActivity.this, "Password must contain at least one special character", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Password tem de conter pelo menos um caractere especial", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (email.contains(" ")) {
-            Toast.makeText(RegisterActivity.this, "Email cannot contain spaces", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Email não pode conter espaços", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (email.length() > 50) {
-            Toast.makeText(RegisterActivity.this, "Email cannot be longer than 50 characters", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Email não pode ser maior que 50 caracteres", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (nome.length() > 50) {
-            Toast.makeText(RegisterActivity.this, "Nome cannot be longer than 50 characters", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Nome não pode ser maior que 50 caracteres", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (!checkBox.isChecked()) {
-            Toast.makeText(RegisterActivity.this, "Please accept Terms & Privacy", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Aceite os Termos e Condições", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if (dbHandler.isEmailRegistered(email)) {
-            Toast.makeText(RegisterActivity.this, "Email is already registered", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "Email já registado", Toast.LENGTH_SHORT).show();
             return false;
         }
 

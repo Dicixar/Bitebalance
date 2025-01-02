@@ -456,7 +456,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
             ContentValues values = new ContentValues();
             values.put(MEAL_NAME, "Sushi");
-            values.put(MEAL_DESCRIPTION, "Boiled sushi, or maki, is sushi where ingredients like fish, vegetables, and rice are wrapped in dried seaweed sheets and then sliced into bite-sized pieces.");
+            values.put(MEAL_DESCRIPTION, "O sushi cozido, ou maki, é um sushi em que os ingredientes, como o peixe, os legumes e o arroz, são envolvidos em folhas de algas secas e depois cortados em pedaços pequenos.");
             values.put(MEAL_IMAGE, R.drawable.sushi_image);
             values.put(MEAL_PRICE, 9.99);
             values.put(MEAL_CATEGORY, "Main Course");
@@ -464,7 +464,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
             ContentValues values1 = new ContentValues();
             values1.put(MEAL_NAME, "Salada com Lombo");
-            values1.put(MEAL_DESCRIPTION, "A healthy salad with tender loin pieces, vegetables, and a light dressing.");
+            values1.put(MEAL_DESCRIPTION, "Uma salada saudável com pedaços de lombo tenros, legumes e um molho ligeiro.");
             values1.put(MEAL_IMAGE, R.drawable.salad_image);
             values1.put(MEAL_PRICE, 8.99);
             values1.put(MEAL_CATEGORY, "Main Course");
@@ -472,7 +472,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
             ContentValues values2 = new ContentValues();
             values2.put(MEAL_NAME, "Frango com Arroz");
-            values2.put(MEAL_DESCRIPTION, "Tender chicken served with perfectly cooked rice and a side of vegetables.");
+            values2.put(MEAL_DESCRIPTION, "Frango tenro servido com arroz perfeitamente cozinhado e um acompanhamento de legumes.");
             values2.put(MEAL_IMAGE, R.drawable.chicken_rice_image);
             values2.put(MEAL_PRICE, 9.99);
             values2.put(MEAL_CATEGORY, "Main Course");
@@ -481,7 +481,6 @@ public class DBHandler extends SQLiteOpenHelper {
 
         db.close();
     }
-
 
     public List<Meal> getMeals() {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -675,7 +674,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 orderValues.put(ORDER_USER_ID, userId);
                 orderValues.put(ORDER_MEAL_ID, cartItem.getMeal().getId());
                 orderValues.put(ORDER_QUANTITY, cartItem.getQuantity());
-                orderValues.put(ORDER_STATUS, "ordered");
+                orderValues.put(ORDER_STATUS, "A entregar");
 
                 long orderId = db.insert(ORDERS_TABLE, null, orderValues);
 

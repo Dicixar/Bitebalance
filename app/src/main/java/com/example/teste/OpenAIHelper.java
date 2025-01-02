@@ -26,7 +26,7 @@ public class OpenAIHelper {
                     JSONObject jsonBody = new JSONObject();
                     jsonBody.put("model", "text-davinci-003");
                     jsonBody.put("prompt", "Cria um plano alimentar para uma pessoa com " +
-                            peso + " kg, " + altura + " cm de altura, e cujo objetivo é " + objetivo + ".");
+                            peso + " kg, " + altura + " m de altura, e cujo objetivo é " + objetivo + ".");
                     jsonBody.put("max_tokens", 500);
                     jsonBody.put("temperature", 0.7); // Criatividade
                     jsonBody.put("top_p", 1);        // Probabilidade acumulada

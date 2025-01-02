@@ -27,22 +27,19 @@ public class PaymentActivity extends AppCompatActivity {
     @SuppressLint({"MissingInflatedId", "SetTextI18n"})
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_payment); // O ficheiro XML fornecido por ti
+        setContentView(R.layout.activity_payment);
 
         dbHandler = new DBHandler(this);
 
-        // Verificar a sessão do utilizador
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("IS_LOGGED_IN", false);
         String deliveryAddress = getIntent().getStringExtra("DELIVERY_ADDRESS");
 
         if (!isLoggedIn) {
-            // Se não estiver logado, redireciona para o login
             Intent intent = new Intent(PaymentActivity.this, LoginActivity.class);
             startActivity(intent);
-            finish(); // Fecha a MainActivity
+            finish();
         } else {
-            // Caso a sessão exista, carrega os dados do utilizador
             String userName = sharedPreferences.getString("USER_NAME", "Guest");
             String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
             displayCartItems(userEmail);
@@ -64,14 +61,17 @@ public class PaymentActivity extends AppCompatActivity {
                 if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton1) {
                     paymentMethod = "Multibanco";
                     createOrder(userEmail, paymentMethod);
+                    Toast.makeText(PaymentActivity.this, "Pagamento realizado com sucesso", Toast.LENGTH_SHORT).show();
                 }
                 else if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton2) {
                     paymentMethod = "Cartão de Crédito";
                     createOrder(userEmail, paymentMethod);
+                    Toast.makeText(PaymentActivity.this, "Pagamento realizado com sucesso", Toast.LENGTH_SHORT).show();
                 }
                 else if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton3) {
                     paymentMethod = "Giftcard";
                     createOrder(userEmail, paymentMethod);
+                    Toast.makeText(PaymentActivity.this, "Pagamento realizado com sucesso", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Toast.makeText(PaymentActivity.this, "Selecione um método de pagamento", Toast.LENGTH_SHORT).show();

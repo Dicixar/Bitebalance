@@ -171,23 +171,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Multibanco"
-                android:textSize="14sp"
-                android:id="@+id/radioButton1"
-                android:buttonTint="@drawable/radio_button"
+                android:buttonTint="@color/brown"
                 style="@style/Base.Theme.Teste"
-                android:textColor="#000000"
-                android:layout_marginBottom="8dp" />
+                android:id="@+id/radioButton1"
+                android:textSize="14sp"
+                android:textColor="#000000" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cartão de Crédito"
-                android:id="@+id/radioButton2"
-                android:textSize="14sp"
                 android:buttonTint="@color/brown"
                 style="@style/Base.Theme.Teste"
-                android:textColor="#000000"
-                android:layout_marginBottom="8dp" />
+                android:id="@+id/radioButton2"
+                android:textSize="14sp"
+                android:textColor="#000000" />
 
             <RadioButton
                 android:layout_width="wrap_content"

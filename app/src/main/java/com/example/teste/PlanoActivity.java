@@ -1,11 +1,13 @@
 package com.example.teste;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.content.SharedPreferences;
@@ -21,7 +23,9 @@ public class PlanoActivity extends AppCompatActivity {
     private Button btnGerarPlano;
     private TextView resultadoPlano;
     private DBHandler dbHandler;
+    private ImageView carrinho;
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,20 +39,31 @@ public class PlanoActivity extends AppCompatActivity {
         spinnerObjetivo = findViewById(R.id.spinnerObjetivo);
         btnGerarPlano = findViewById(R.id.btnGerarPlano);
         resultadoPlano = findViewById(R.id.resultadoPlano);
+        carrinho = findViewById(R.id.carrinho);
+        carrinho.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PlanoActivity.this, EncomendaActivity.class);
+                startActivity(intent);
+            }
+        });
+
         dbHandler = new DBHandler(this);
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
         String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
 
         double weight = dbHandler.getBmi(dbHandler.getUserId(userEmail));
         double height = dbHandler.getBmi1(dbHandler.getUserId(userEmail));
+        String mealPlan = dbHandler.getMealPlan(dbHandler.getUserId(userEmail));
 
         inputPeso.setText(String.valueOf(weight));
         inputAltura.setText(String.valueOf(height));
+        resultadoPlano.setText(mealPlan);
 
         // Define os valores do Spinner
         String[] objetivos = {"Perder Peso", "Ganhar Massa Muscular", "Manter Peso", "Aumentar Energia e Disposição", "Reduzir o Estresse e Ansiedade", "Reduzir o Colesterol",};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, objetivos);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, objetivos);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinnerObjetivo.setAdapter(adapter);
 
         btnGerarPlano.setOnClickListener(view -> {
@@ -58,12 +73,14 @@ public class PlanoActivity extends AppCompatActivity {
 
             if (peso.isEmpty() || altura.isEmpty()) {
                 resultadoPlano.setText("Por favor, preencha todos os campos.");
-                resultadoPlano.setVisibility(View.VISIBLE);
-            } else {
+            }
+            else
+            {
                 OpenAIHelper.gerarPlanoAlimentar(peso, altura, objetivo, new OpenAIHelper.Callback() {
                     @Override
                     public void onSuccess(String response) {
                         runOnUiThread(() -> resultadoPlano.setText(response));
+                        dbHandler.updateMealPlan(dbHandler.getUserId(userEmail), resultadoPlano.getText().toString());
                     }
 
                     @Override
@@ -71,7 +88,6 @@ public class PlanoActivity extends AppCompatActivity {
                         runOnUiThread(() -> resultadoPlano.setText("Erro: " + error));
                     }
                 });
-                resultadoPlano.setVisibility(View.VISIBLE);
             }
         });
     }

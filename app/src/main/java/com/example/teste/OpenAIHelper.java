@@ -5,17 +5,18 @@ import okhttp3.*;
 import org.json.JSONObject;
 import java.io.IOException;
 import android.util.Log;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class OpenAIHelper {
 
-    private static final String API_URL = "https://api.openai.com/v1/completions";
+    private static final String API_URL = "https://api.openai.com/v1/chat/completions";
     private static final String API_KEY = "";
 
     public interface Callback {
         void onSuccess(String response);
         void onError(String error);
     }
-
     public static void gerarPlanoAlimentar(String peso, String altura, String objetivo, Callback callback) {
         new AsyncTask<Void, Void, String>() {
             @Override
@@ -23,26 +24,38 @@ public class OpenAIHelper {
                 try {
                     OkHttpClient client = new OkHttpClient();
 
+                    // Create the request payload
                     JSONObject jsonBody = new JSONObject();
-                    jsonBody.put("model", "text-davinci-003");
-                    jsonBody.put("prompt", "Cria um plano alimentar para uma pessoa com " +
-                            peso + " kg, " + altura + " m de altura, e cujo objetivo é " + objetivo + ".");
+                    jsonBody.put("model", "gpt-3.5-turbo");
+                    jsonBody.put("messages", new JSONArray()
+                            .put(new JSONObject()
+                                    .put("role", "user")
+                                    .put("content", "Cria um plano alimentar para uma pessoa com " +
+                                            peso + " kg, " + altura + " m de altura, e cujo objetivo é " + objetivo + ".")
+                            )
+                    );
                     jsonBody.put("max_tokens", 500);
-                    jsonBody.put("temperature", 0.7); // Criatividade
-                    jsonBody.put("top_p", 1);        // Probabilidade acumulada
+                    jsonBody.put("temperature", 0.7);
+                    jsonBody.put("top_p", 1);
 
-                    RequestBody body = RequestBody.create(jsonBody.toString(), MediaType.get("application/json; charset=utf-8"));
+                    // Log the request payload for debugging
+                    String jsonPayload = jsonBody.toString();
+                    Log.d("OpenAIHelper", "Request Payload: " + jsonPayload);
+
+                    // Create the request
+                    RequestBody body = RequestBody.create(jsonPayload, MediaType.get("application/json; charset=utf-8"));
                     Request request = new Request.Builder()
                             .url(API_URL)
                             .addHeader("Authorization", "Bearer " + API_KEY)
                             .post(body)
                             .build();
 
+                    // Execute the request
                     Response response = client.newCall(request).execute();
                     if (response.isSuccessful()) {
                         return response.body().string();
                     } else {
-                        return "{\"error\":\"Erro na requisição: " + response.code() + "\"}";
+                        return "{\"error\":\"Erro na requisição: " + response.code() + " - " + response.message() + "\"}";
                     }
                 } catch (IOException | org.json.JSONException e) {
                     Log.e("OpenAIHelper", "Erro ao enviar requisição", e);
@@ -63,7 +76,8 @@ public class OpenAIHelper {
                     JSONObject jsonResponse = new JSONObject(result);
                     String text = jsonResponse.getJSONArray("choices")
                             .getJSONObject(0)
-                            .getString("text");
+                            .getJSONObject("message")
+                            .getString("content");
                     callback.onSuccess(text.trim());
                 } catch (Exception e) {
                     callback.onError("Erro ao processar a resposta: " + e.getMessage());

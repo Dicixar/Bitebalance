@@ -12,14 +12,16 @@
 <!-- Barra superior com botão de voltar -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp">
+        android:layout_height="40dp"
+        android:background="@color/green">
 
         <ImageButton
             android:id="@+id/voltar"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/ic_back"
-            android:background="@android:color/transparent" />
+            android:background="@android:color/transparent"
+            app:tint="@color/white" />
 
         <TextView
             android:layout_width="match_parent"
@@ -29,7 +31,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="18sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:layout_marginEnd="40dp">
 
         </TextView>

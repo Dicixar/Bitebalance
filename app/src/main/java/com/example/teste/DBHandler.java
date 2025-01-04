@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -192,7 +193,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     // Database name and version
     private static final String DB_NAME = "bitebalance";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     // Table names
     private static final String USERS_TABLE = "users";
@@ -252,6 +253,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String BMI_USER_ID = "user_id";
     private static final String BMI_WEIGHT = "weight";
     private static final String BMI_HEIGHT = "height";
+    private static final String MEAL_PLAN = "meal_plan";
 
     // Constructor
     public DBHandler(Context context) {
@@ -321,6 +323,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + BMI_USER_ID + " INTEGER, "
                 + BMI_WEIGHT + " DECIMAL(10, 2), "
                 + BMI_HEIGHT + " DECIMAL(10, 2), "
+                + MEAL_PLAN + " TEXT, "
                 + "FOREIGN KEY (" + BMI_USER_ID + ") REFERENCES " + USERS_TABLE + "(" + USER_ID + ") ON DELETE CASCADE)";
 
 
@@ -624,7 +627,6 @@ public class DBHandler extends SQLiteOpenHelper {
             if (cursor != null) {
                 cursor.close();
             }
-            // Do not close the database here, as it may still be needed by the caller.
         }
         return cartItems;
     }
@@ -650,7 +652,6 @@ public class DBHandler extends SQLiteOpenHelper {
             if (cursor != null) {
                 cursor.close();
             }
-            // NÃO fechar o db aqui, pois pode ser usado em outros métodos
         }
 
         return total;
@@ -731,7 +732,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 new String[]{String.valueOf(userId)});
 
         if (cursor.moveToFirst()) {
-            cursor = db.rawQuery("UPDATE " + BMI_TABLE + " SET " + BMI_WEIGHT + " = ?, " + BMI_HEIGHT + " = ? WHERE " + BMI_USER_ID + " = ?",
+            cursor = db.rawQuery("UPDATE " + BMI_TABLE + " SET " + BMI_WEIGHT + " = ?, " + BMI_HEIGHT + " = ?, " + MEAL_PLAN + " = ? WHERE " + BMI_USER_ID + " = ?",
                     new String[]{String.valueOf(weight), String.valueOf(height), String.valueOf(userId)});
             cursor.close();
             db.close();
@@ -747,6 +748,7 @@ public class DBHandler extends SQLiteOpenHelper {
             values.put(BMI_USER_ID, userId);
             values.put(BMI_WEIGHT, weight);
             values.put(BMI_HEIGHT, height);
+            values.put(MEAL_PLAN, "");
 
             db1.insert(BMI_TABLE, null, values);
             db1.close();
@@ -754,7 +756,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public double getBmi1(int userId) {
+    public double getBmi(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + BMI_TABLE + " WHERE " + BMI_USER_ID + " = ?",
                 new String[]{String.valueOf(userId)});
@@ -769,7 +771,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public double getBmi(int userId) {
+    public double getBmi1(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + BMI_TABLE + " WHERE " + BMI_USER_ID + " = ?",
                 new String[]{String.valueOf(userId)});
@@ -783,4 +785,57 @@ public class DBHandler extends SQLiteOpenHelper {
         return 0;
     }
 
+    public String getMealPlan(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        String mealPlan = null;
+
+        try {
+            // Especifica explicitamente a coluna MEAL_PLAN na consulta
+            cursor = db.rawQuery("SELECT " + MEAL_PLAN + " FROM " + BMI_TABLE + " WHERE " + USER_ID + " = ?",
+                    new String[]{String.valueOf(userId)});
+
+            // Verifica se o Cursor não é nulo e contém dados
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndex(MEAL_PLAN);
+
+                // Verifica se a coluna MEAL_PLAN existe no Cursor
+                if (columnIndex != -1) {
+                    mealPlan = cursor.getString(columnIndex);
+                } else {
+                    Log.e("getMealPlan", "Coluna " + MEAL_PLAN + " não encontrada no Cursor.");
+                }
+            } else {
+                Log.e("getMealPlan", "Cursor vazio ou nulo para o userId: " + userId);
+            }
+        } catch (Exception e) {
+            Log.e("getMealPlan", "Erro ao recuperar o plano de refeições: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            if (db != null) {
+                db.close();
+            }
+        }
+
+        return mealPlan;
+    }
+
+    public void updateMealPlan(int userId, String mealPlan) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(MEAL_PLAN, mealPlan);
+        db.update(BMI_TABLE, values, USER_ID + " = ?", new String[]{String.valueOf(userId)});
+        db.close();
+    }
+
+    public void updateOrderStatus(int orderId, String newStatus) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ORDER_STATUS, newStatus);
+        db.update(ORDERS_TABLE, values, ORDER_ID + " = ?", new String[]{String.valueOf(orderId)});
+        db.close();
+
+    }
 }

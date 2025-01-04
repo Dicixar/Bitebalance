@@ -50,6 +50,7 @@
         <Button
             android:layout_width="120dp"
             android:layout_height="40dp"
+            android:textColor="@color/white"
             android:backgroundTint="@color/green"
             android:clickable="false"
             android:id="@+id/status">
@@ -98,5 +99,34 @@
             android:text="Price: $19.98"
             android:textSize="14sp"
             android:textColor="#333333" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:id="@+id/buttons">
+            <Button
+                android:layout_width="140dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="6dp"
+                android:textSize="12dp"
+                android:id="@+id/entregue"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/green"
+                android:text="Marcar como Entregue">
+            </Button>
+            <Button
+                android:layout_width="140dp"
+                android:layout_height="50dp"
+                android:id="@+id/cancelar"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/brown"
+                android:textSize="12dp"
+                android:text="Cancelar Encomenda">
+            </Button>
+
+
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>

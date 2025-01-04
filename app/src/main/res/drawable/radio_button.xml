@@ -1,4 +1,4 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@color/brown" android:state_checked="true" /> <!-- Cor quando selecionado -->
-    <item android:color="#808080" android:state_checked="false" /> <!-- Cor quando não selecionado -->
+    <item android:state_checked="true" android:color="@color/brown" /> <!-- Cor quando selecionado -->
+    <item android:state_checked="false" android:color="@color/black" /> <!-- Cor quando não selecionado -->
 </selector>

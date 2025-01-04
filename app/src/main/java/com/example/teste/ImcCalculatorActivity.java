@@ -38,6 +38,12 @@ public class ImcCalculatorActivity extends AppCompatActivity {
         ImageView imcBar = findViewById(R.id.imcBar);
         ImageView imcPointer = findViewById(R.id.imcPointer);
         TextView textClassification = findViewById(R.id.text_classification);
+        ImageView carrinho = findViewById(R.id.carrinho);
+        carrinho.setOnClickListener(v -> {
+            Intent intent = new Intent(ImcCalculatorActivity.this, EncomendaActivity.class);
+            startActivity(intent);
+            finish();
+        });
 
         dbHandler = new DBHandler(this);
         double weight1 = dbHandler.getBmi(dbHandler.getUserId(userEmail));

@@ -2,6 +2,8 @@ package com.example.teste;
 
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -56,26 +58,49 @@ public class PaymentActivity extends AppCompatActivity {
             }
             Button pay = findViewById(R.id.pay);
             pay.setOnClickListener(view -> {
-                radioGroup = findViewById(R.id.radioGroup);
-                String paymentMethod = "";
-                if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton1) {
-                    paymentMethod = "Multibanco";
-                    createOrder(userEmail, paymentMethod);
-                    Toast.makeText(PaymentActivity.this, "Pagamento realizado com sucesso", Toast.LENGTH_SHORT).show();
-                }
-                else if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton2) {
-                    paymentMethod = "Cartão de Crédito";
-                    createOrder(userEmail, paymentMethod);
-                    Toast.makeText(PaymentActivity.this, "Pagamento realizado com sucesso", Toast.LENGTH_SHORT).show();
-                }
-                else if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton3) {
-                    paymentMethod = "Giftcard";
-                    createOrder(userEmail, paymentMethod);
-                    Toast.makeText(PaymentActivity.this, "Pagamento realizado com sucesso", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(PaymentActivity.this, "Selecione um método de pagamento", Toast.LENGTH_SHORT).show();
-                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Confirmação"); // Título do popup
+                builder.setMessage("Efetuar pagamento?"); // Mensagem do popup
+
+                //confirmação
+                builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        radioGroup = findViewById(R.id.radioGroup);
+                        String paymentMethod = "";
+                        if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton1) {
+                            paymentMethod = "Multibanco";
+                            createOrder(userEmail, paymentMethod);
+                            Toast.makeText(PaymentActivity.this, "Pagamento realizado com sucesso", Toast.LENGTH_SHORT).show();
+                        }
+                        else if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton2) {
+                            paymentMethod = "Cartão de Crédito";
+                            createOrder(userEmail, paymentMethod);
+                            Toast.makeText(PaymentActivity.this, "Pagamento realizado com sucesso", Toast.LENGTH_SHORT).show();
+                        }
+                        else if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton3) {
+                            paymentMethod = "Giftcard";
+                            createOrder(userEmail, paymentMethod);
+                            Toast.makeText(PaymentActivity.this, "Pagamento realizado com sucesso", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Toast.makeText(PaymentActivity.this, "Selecione um método de pagamento", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                // Cancelar ação
+                builder.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Toast.makeText(PaymentActivity.this, "Ação cancelada", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                // Mostra o popup
+                AlertDialog dialog = builder.create();
+                dialog.show();
             });
 
 

@@ -3,20 +3,16 @@ package com.example.teste;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.MenuView;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.util.ArrayList;
+import androidx.core.content.ContextCompat;
 import java.util.List;
 
 public class ItemActivity extends AppCompatActivity {
@@ -30,6 +26,12 @@ public class ItemActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food);
+
+        // Muda a cor da StatusBar para verde
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.green));
+
         back = findViewById(R.id.back);
         foodImage = findViewById(R.id.food_image);
         nome = findViewById(R.id.food_name);

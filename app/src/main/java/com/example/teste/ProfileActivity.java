@@ -1,6 +1,8 @@
 package com.example.teste;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -124,8 +126,13 @@ public class ProfileActivity extends AppCompatActivity {
                 orderStatusButton.setBackgroundColor(ContextCompat.getColor(this, R.color.yellow));
             } else if (order.getStatus().equals("Entregue")) {
                 orderStatusButton.setBackgroundColor(ContextCompat.getColor(this, R.color.green));
+                LinearLayout buttons = orderView.findViewById(R.id.buttons);
+                buttons.setVisibility(View.GONE);
+
             } else if (order.getStatus().equals("Cancelado")) {
                 orderStatusButton.setBackgroundColor(ContextCompat.getColor(this, R.color.red));
+                LinearLayout buttons = orderView.findViewById(R.id.buttons);
+                buttons.setVisibility(View.GONE);
             }
 
             // Adiciona a encomenda ao layout
@@ -145,6 +152,71 @@ public class ProfileActivity extends AppCompatActivity {
                     expandIcon.setRotation(270);
                 }
             });
+
+            @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button entregueButton = orderView.findViewById(R.id.entregue);
+            @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button cancelarButton = orderView.findViewById(R.id.cancelar);
+            entregueButton.setOnClickListener(v -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Confirmação"); // Título do popup
+                builder.setMessage("Tem certeza que a encomenda foi entregue?"); // Mensagem do popup
+
+                //confirmação
+                builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dbHandler.updateOrderStatus(order.getId(), "Entregue");
+                        Toast.makeText(ProfileActivity.this, "Encomenda Entregue", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(ProfileActivity.this, ProfileActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+
+                // Cancelar ação
+                builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Toast.makeText(ProfileActivity.this, "Ação cancelada", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                // Mostra o popup
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            });
+
+            cancelarButton.setOnClickListener(v -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Confirmação"); // Título do popup
+                builder.setMessage("Tem a certeza que deseja cancelar a encomenda?"); // Mensagem do popup
+
+                // Botão de confirmação
+                builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dbHandler.updateOrderStatus(order.getId(), "Cancelado");
+                        Toast.makeText(ProfileActivity.this, "Encomenda Cancelada", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(ProfileActivity.this, ProfileActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+
+                // Botão de cancelamento
+                builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(ProfileActivity.this, "Ação cancelada.", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            });
+
         }
     }
 
@@ -197,4 +269,5 @@ public class ProfileActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
 }

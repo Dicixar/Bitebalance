@@ -118,6 +118,7 @@
                         android:layout_height="wrap_content"
                         android:text=""
                         android:textSize="16sp"
+                        android:inputType="textPersonName"
                         android:id="@+id/nome"
                         android:textColor="#333333" />
 
@@ -206,6 +207,8 @@
                         android:layout_height="wrap_content"
                         android:text=""
                         android:textSize="16sp"
+                        android:inputType="number"
+                        android:maxLength="9"
                         android:textColor="#333333"
                         android:id="@+id/phone"/>
 
@@ -250,6 +253,7 @@
                         android:layout_height="wrap_content"
                         android:text=""
                         android:textSize="16sp"
+                        android:maxLength="30"
                         android:textColor="#333333" 
                         android:id="@+id/morada"/>
 
@@ -274,6 +278,7 @@
                 android:backgroundTint="@color/green"
                 android:text="Atualizar Dados"
                 android:layout_marginTop="10dp"
+                android:textColor="@color/black"
                 android:id="@+id/atualizar"
                 />
 

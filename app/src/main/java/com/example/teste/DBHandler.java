@@ -80,13 +80,21 @@ public class DBHandler extends SQLiteOpenHelper {
         private double price;
         private int image;
         private int id;
+        private int calories;
+        private int carbohydrates;
+        private int proteins;
+        private int fats;
 
-        public Meal(String name, String description, double price, int image, int id) {
+        public Meal(String name, String description, double price, int image, int id, int calories, int carbohydrates, int proteins, int fats) {
             this.name = name;
             this.description = description;
             this.price = price;
             this.image = image;
             this.id = id;
+            this.calories = calories;
+            this.carbohydrates = carbohydrates;
+            this.proteins = proteins;
+            this.fats = fats;
         }
 
         public int getId() {
@@ -123,6 +131,22 @@ public class DBHandler extends SQLiteOpenHelper {
 
         public void setImage() {
             this.image = image;
+        }
+
+        public int getCalories() {
+            return calories;
+        }
+
+        public int getCarbohydrates() {
+            return carbohydrates;
+        }
+
+        public int getProteins() {
+            return proteins;
+        }
+
+        public int getFats() {
+            return fats;
         }
     }
 
@@ -193,7 +217,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     // Database name and version
     private static final String DB_NAME = "bitebalance";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
     // Table names
     private static final String USERS_TABLE = "users";
@@ -224,6 +248,10 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String MEAL_IMAGE = "image";
     private static final String MEAL_PRICE = "price";
     private static final String MEAL_CATEGORY = "category";
+    private static final String MEAL_CALORIES = "calories";
+    private static final String MEAL_CARBOHYDRATES = "carbohydrates";
+    private static final String MEAL_PROTEINS = "proteins";
+    private static final String MEAL_FATS = "fats";
 
     // Orders table columns
     private static final String ORDER_ID = "id";
@@ -285,7 +313,11 @@ public class DBHandler extends SQLiteOpenHelper {
                 + MEAL_DESCRIPTION + " TEXT, "
                 + MEAL_IMAGE + " BLOB, "
                 + MEAL_PRICE + " DECIMAL(10, 2), "
-                + MEAL_CATEGORY + " TEXT)";
+                + MEAL_CATEGORY + " TEXT,"
+                + MEAL_CALORIES + " INTEGER, "
+                + MEAL_CARBOHYDRATES + " INTEGER, "
+                + MEAL_PROTEINS + " INTEGER, "
+                + MEAL_FATS + " INTEGER)";
 
         // Create orders table
         String createOrdersTable = "CREATE TABLE " + ORDERS_TABLE + " ("
@@ -463,6 +495,10 @@ public class DBHandler extends SQLiteOpenHelper {
             values.put(MEAL_IMAGE, R.drawable.sushi_image);
             values.put(MEAL_PRICE, 9.99);
             values.put(MEAL_CATEGORY, "Main Course");
+            values.put(MEAL_CALORIES, 200);
+            values.put(MEAL_CARBOHYDRATES, 50);
+            values.put(MEAL_PROTEINS, 20);
+            values.put(MEAL_FATS, 10);
             db.insert(MEALS_TABLE, null, values);
 
             ContentValues values1 = new ContentValues();
@@ -471,6 +507,10 @@ public class DBHandler extends SQLiteOpenHelper {
             values1.put(MEAL_IMAGE, R.drawable.salad_image);
             values1.put(MEAL_PRICE, 8.99);
             values1.put(MEAL_CATEGORY, "Main Course");
+            values1.put(MEAL_CALORIES, 150);
+            values1.put(MEAL_CARBOHYDRATES, 30);
+            values1.put(MEAL_PROTEINS, 10);
+            values1.put(MEAL_FATS, 5);
             db.insert(MEALS_TABLE, null, values1);
 
             ContentValues values2 = new ContentValues();
@@ -479,6 +519,10 @@ public class DBHandler extends SQLiteOpenHelper {
             values2.put(MEAL_IMAGE, R.drawable.chicken_rice_image);
             values2.put(MEAL_PRICE, 9.99);
             values2.put(MEAL_CATEGORY, "Main Course");
+            values2.put(MEAL_CALORIES, 250);
+            values2.put(MEAL_CARBOHYDRATES, 40);
+            values2.put(MEAL_PROTEINS, 25);
+            values2.put(MEAL_FATS, 15);
             db.insert(MEALS_TABLE, null, values2);
         }
 
@@ -498,7 +542,11 @@ public class DBHandler extends SQLiteOpenHelper {
                         cursor.getString(cursor.getColumnIndexOrThrow(MEAL_DESCRIPTION)),
                         cursor.getDouble(cursor.getColumnIndexOrThrow(MEAL_PRICE)),
                         cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_IMAGE)),
-                        cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_ID))
+                        cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_ID)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_CALORIES)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_CARBOHYDRATES)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_PROTEINS)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_FATS))
                 );
                 meals.add(meal);
             } while (cursor.moveToNext());
@@ -588,7 +636,11 @@ public class DBHandler extends SQLiteOpenHelper {
                     cursor.getString(cursor.getColumnIndexOrThrow(MEAL_DESCRIPTION)),
                     cursor.getDouble(cursor.getColumnIndexOrThrow(MEAL_PRICE)),
                     cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_IMAGE)),
-                    cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_ID))
+                    cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_ID)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_CALORIES)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_CARBOHYDRATES)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_PROTEINS)),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_FATS))
             );
             cursor.close();
             // Do not close the database here, as it may still be needed by the caller.

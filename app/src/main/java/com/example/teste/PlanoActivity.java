@@ -80,6 +80,10 @@ public class PlanoActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(String response) {
                         runOnUiThread(() -> resultadoPlano.setText(response));
+                        //se n houver nada na tabela bmi
+                        if (dbHandler.getBmi(dbHandler.getUserId(userEmail)) == 0.0 && dbHandler.getBmi1(dbHandler.getUserId(userEmail)) == 0.0) {
+                            dbHandler.addBmi(dbHandler.getUserId(userEmail), Double.parseDouble(peso), Double.parseDouble(altura));
+                        }
                         dbHandler.updateMealPlan(dbHandler.getUserId(userEmail), resultadoPlano.getText().toString());
                     }
 

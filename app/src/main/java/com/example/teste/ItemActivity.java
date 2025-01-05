@@ -17,11 +17,11 @@ import java.util.List;
 
 public class ItemActivity extends AppCompatActivity {
     private ImageView back,foodImage;
-    private TextView nome,desc,preco,title;
+    private TextView nome,desc,preco,title,calories,carbohydrates,proteins,fats;
     private Button adicionar;
     private DBHandler dbHandler;
 
-    @SuppressLint("DefaultLocale")
+    @SuppressLint({"DefaultLocale", "MissingInflatedId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +39,11 @@ public class ItemActivity extends AppCompatActivity {
         preco = findViewById(R.id.food_price);
         adicionar = findViewById(R.id.btnOrderNow);
         title = findViewById(R.id.food_title);
+        calories = findViewById(R.id.calorias);
+        carbohydrates = findViewById(R.id.carbo);
+        proteins = findViewById(R.id.proteinas);
+        fats = findViewById(R.id.gordura);
+
         dbHandler = new DBHandler(this);
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
         String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
@@ -52,6 +57,10 @@ public class ItemActivity extends AppCompatActivity {
         desc.setText(meal.getDescription());
         preco.setText(String.format("€ %.2f", meal.getPrice()));
         title.setText(meal.getName());
+        calories.setText(String.format("%d kcal", meal.getCalories()));
+        carbohydrates.setText(String.format("%d g", meal.getCarbohydrates()));
+        proteins.setText(String.format("%d g", meal.getProteins()));
+        fats.setText(String.format("%d g", meal.getFats()));
 
 
         back.setOnClickListener(view -> {

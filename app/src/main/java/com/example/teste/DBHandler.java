@@ -11,9 +11,10 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-
+// Classe DBHandler que estende SQLiteOpenHelper para gerir a base de dados SQLite
 public class DBHandler extends SQLiteOpenHelper {
 
+    // Classe interna User para representar um utilizador
     public static class User {
         private String name;
         private String email;
@@ -29,7 +30,6 @@ public class DBHandler extends SQLiteOpenHelper {
             this.morada = morada;
             this.phone = phone;
             this.id = id;
-
         }
 
         // Getters e Setters
@@ -74,6 +74,7 @@ public class DBHandler extends SQLiteOpenHelper {
         }
     }
 
+    // Classe interna Meal para representar uma refeição
     public static class Meal {
         private String name;
         private String description;
@@ -85,6 +86,7 @@ public class DBHandler extends SQLiteOpenHelper {
         private int proteins;
         private int fats;
 
+        // Construtor
         public Meal(String name, String description, double price, int image, int id, int calories, int carbohydrates, int proteins, int fats) {
             this.name = name;
             this.description = description;
@@ -97,6 +99,7 @@ public class DBHandler extends SQLiteOpenHelper {
             this.fats = fats;
         }
 
+        // Getters e Setters
         public int getId() {
             return id;
         }
@@ -150,17 +153,20 @@ public class DBHandler extends SQLiteOpenHelper {
         }
     }
 
+    // Classe interna CartItem para representar um item no carrinho
     public class CartItem {
         private int id;
         private Meal meal;
         private int quantity;
 
+        // Construtor
         public CartItem(int id, Meal meal, int quantity) {
             this.id = id;
             this.meal = meal;
             this.quantity = quantity;
         }
 
+        // Getters
         public int getId() {
             return id;
         }
@@ -178,6 +184,7 @@ public class DBHandler extends SQLiteOpenHelper {
         }
     }
 
+    // Classe interna Order para representar uma encomenda
     public static class Order {
         private int id;
         private Meal meal;
@@ -185,6 +192,7 @@ public class DBHandler extends SQLiteOpenHelper {
         private String status;
         private String date;
 
+        // Construtor
         public Order(int id, Meal meal, int quantity, String status, String date) {
             this.id = id;
             this.meal = meal;
@@ -193,6 +201,7 @@ public class DBHandler extends SQLiteOpenHelper {
             this.date = date;
         }
 
+        // Getters
         public int getId() {
             return id;
         }
@@ -214,12 +223,11 @@ public class DBHandler extends SQLiteOpenHelper {
         }
     }
 
-
-    // Database name and version
+    // Nome e versão da base de dados
     private static final String DB_NAME = "bitebalance";
     private static final int DB_VERSION = 3;
 
-    // Table names
+    // Nomes das tabelas
     private static final String USERS_TABLE = "users";
     private static final String USER_PROFILES_TABLE = "user_profiles";
     private static final String MEALS_TABLE = "meals";
@@ -228,7 +236,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String CART_TABLE = "cart";
     private static final String BMI_TABLE = "bmi";
 
-    // Users table columns
+    // Colunas da tabela de utilizadores
     private static final String USER_ID = "id";
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
@@ -237,11 +245,11 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String ADDRESS = "address";
     private static final String CREATED_AT = "created_at";
 
-    // User profiles table columns
+    // Colunas da tabela de perfis de utilizador
     private static final String PROFILE_ID = "id";
     private static final String PROFILE_USER_ID = "user_id";
 
-    // Meals table columns
+    // Colunas da tabela de refeições
     private static final String MEAL_ID = "id";
     private static final String MEAL_NAME = "name";
     private static final String MEAL_DESCRIPTION = "description";
@@ -253,7 +261,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String MEAL_PROTEINS = "proteins";
     private static final String MEAL_FATS = "fats";
 
-    // Orders table columns
+    // Colunas da tabela de encomendas
     private static final String ORDER_ID = "id";
     private static final String ORDER_USER_ID = "user_id";
     private static final String ORDER_MEAL_ID = "meal_id";
@@ -261,14 +269,14 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String ORDER_STATUS = "status";
     private static final String ORDER_DATE = "order_date";
 
-    // Payments table columns
+    // Colunas da tabela de pagamentos
     private static final String PAYMENT_ID = "id";
     private static final String PAYMENT_ORDER_ID = "order_id";
     private static final String PAYMENT_AMOUNT = "amount";
     private static final String PAYMENT_METHOD = "method";
     private static final String PAYMENT_DATE = "payment_date";
 
-    // Cart table columns
+    // Colunas da tabela do carrinho
     private static final String CART_ID = "id";
     private static final String CART_USER_ID = "user_id";
     private static final String CART_MEAL_ID = "meal_id";
@@ -276,21 +284,22 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String CART_STATUS = "status";
     private static final String CART_DATE = "cart_date";
 
-    // Bmi table columns
+    // Colunas da tabela de BMI
     private static final String BMI_ID = "id";
     private static final String BMI_USER_ID = "user_id";
     private static final String BMI_WEIGHT = "weight";
     private static final String BMI_HEIGHT = "height";
     private static final String MEAL_PLAN = "meal_plan";
 
-    // Constructor
+    // Construtor
     public DBHandler(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
+    // Método chamado quando a base de dados é criada pela primeira vez
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Create users table
+        // Criação da tabela de utilizadores
         String createUsersTable = "CREATE TABLE " + USERS_TABLE + " ("
                 + USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + USERNAME + " TEXT UNIQUE NOT NULL, "
@@ -300,13 +309,13 @@ public class DBHandler extends SQLiteOpenHelper {
                 + CREATED_AT + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP,"
                 + ADDRESS + " TEXT )";
 
-        // Create user profiles table
+        // Criação da tabela de perfis de utilizador
         String createUserProfilesTable = "CREATE TABLE " + USER_PROFILES_TABLE + " ("
                 + PROFILE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + PROFILE_USER_ID + " INTEGER, "
                 + "FOREIGN KEY (" + PROFILE_USER_ID + ") REFERENCES " + USERS_TABLE + "(" + USER_ID + ") ON DELETE CASCADE)";
 
-        // Create meals table
+        // Criação da tabela de refeições
         String createMealsTable = "CREATE TABLE " + MEALS_TABLE + " ("
                 + MEAL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + MEAL_NAME + " TEXT UNIQUE NOT NULL, "
@@ -319,7 +328,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + MEAL_PROTEINS + " INTEGER, "
                 + MEAL_FATS + " INTEGER)";
 
-        // Create orders table
+        // Criação da tabela de encomendas
         String createOrdersTable = "CREATE TABLE " + ORDERS_TABLE + " ("
                 + ORDER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + ORDER_USER_ID + " INTEGER, "
@@ -330,7 +339,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + "FOREIGN KEY (" + ORDER_USER_ID + ") REFERENCES " + USERS_TABLE + "(" + USER_ID + ") ON DELETE CASCADE, "
                 + "FOREIGN KEY (" + ORDER_MEAL_ID + ") REFERENCES " + MEALS_TABLE + "(" + MEAL_ID + ") ON DELETE CASCADE)";
 
-        // Create payments table
+        // Criação da tabela de pagamentos
         String createPaymentsTable = "CREATE TABLE " + PAYMENTS_TABLE + " ("
                 + PAYMENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + PAYMENT_ORDER_ID + " INTEGER, "
@@ -339,7 +348,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + PAYMENT_DATE + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
                 + "FOREIGN KEY (" + PAYMENT_ORDER_ID + ") REFERENCES " + ORDERS_TABLE + "(" + ORDER_ID + ") ON DELETE CASCADE)";
 
-
+        // Criação da tabela do carrinho
         String createCartTable = "CREATE TABLE " + CART_TABLE + " ("
                 + CART_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + CART_USER_ID + " INTEGER, "
@@ -350,6 +359,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + "FOREIGN KEY (" + CART_USER_ID + ") REFERENCES " + USERS_TABLE + "(" + USER_ID + ") ON DELETE CASCADE, "
                 + "FOREIGN KEY (" + CART_MEAL_ID + ") REFERENCES " + MEALS_TABLE + "(" + MEAL_ID + ") ON DELETE CASCADE)";
 
+        // Criação da tabela de BMI
         String createBmiTable = "CREATE TABLE " + BMI_TABLE + " ("
                 + BMI_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + BMI_USER_ID + " INTEGER, "
@@ -358,8 +368,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + MEAL_PLAN + " TEXT, "
                 + "FOREIGN KEY (" + BMI_USER_ID + ") REFERENCES " + USERS_TABLE + "(" + USER_ID + ") ON DELETE CASCADE)";
 
-
-        // Execute the SQL statements to create tables
+        // Executa as queries para criar as tabelas
         db.execSQL(createUsersTable);
         db.execSQL(createUserProfilesTable);
         db.execSQL(createMealsTable);
@@ -368,9 +377,11 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL(createCartTable);
         db.execSQL(createBmiTable);
     }
+
+    // Método chamado quando a base de dados precisa de ser atualizada
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop tables if they exist
+        // Remove as tabelas existentes
         db.execSQL("DROP TABLE IF EXISTS " + USERS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + USER_PROFILES_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + MEALS_TABLE);
@@ -379,10 +390,11 @@ public class DBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + CART_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + BMI_TABLE);
 
+        // Cria as tabelas novamente
         onCreate(db);
     }
 
-    // Método para verificar o login de um usuário
+    // Método para validar o login de um utilizador
     public boolean validateUserLogin(String emailOrPhone, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM users WHERE (email = ?) AND password = ?",
@@ -394,6 +406,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return isValid;
     }
 
+    // Método para adicionar um novo utilizador
     public void addNewUser(String name, String email, String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -408,6 +421,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Método para obter um utilizador pelo email
     @SuppressLint("Range")
     public User getUserByEmail(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -433,6 +447,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return null;
     }
 
+    // Método para obter os detalhes de um utilizador
     public User getUserDetails(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM users WHERE email = ?", new String[]{email});
@@ -460,6 +475,7 @@ public class DBHandler extends SQLiteOpenHelper {
         }
     }
 
+    // Método para verificar se um email já está registado
     public boolean isEmailRegistered(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM users WHERE email = ?", new String[]{email});
@@ -469,6 +485,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return isRegistered;
     }
 
+    // Método para editar o perfil de um utilizador
     public void editProfile(String name, String email, String address, String phone) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -481,6 +498,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Método para adicionar refeições à base de dados
     @SuppressLint("Recycle")
     public void addMeal() {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -529,6 +547,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Método para obter todas as refeições da base de dados
     public List<Meal> getMeals() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM meals", null);
@@ -556,6 +575,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return meals;
     }
 
+    // Método para adicionar um administrador à base de dados
     @SuppressLint("Recycle")
     public void addAdmin() {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -576,6 +596,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
+    // Método para adicionar um item ao carrinho
     @SuppressLint("Range")
     public void addCart(Meal meal, int iduser, int idmeal) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -612,6 +633,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Método para obter o ID de um utilizador pelo email
     @SuppressLint("Range")
     public int getUserId(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -626,6 +648,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return userId;
     }
 
+    // Método para obter uma refeição pelo ID
     public Meal getMealById(int mealId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM meals WHERE id = ?", new String[]{String.valueOf(mealId)});
@@ -643,15 +666,16 @@ public class DBHandler extends SQLiteOpenHelper {
                     cursor.getInt(cursor.getColumnIndexOrThrow(MEAL_FATS))
             );
             cursor.close();
-            // Do not close the database here, as it may still be needed by the caller.
+            // Não fechar a base de dados aqui, pois pode ainda ser necessária pelo chamador.
             return meal;
         }
 
         cursor.close();
-        // Do not close the database here, as it may still be needed by the caller.
+        // Não fechar a base de dados aqui, pois pode ainda ser necessária pelo chamador.
         return null;
     }
 
+    // Método para obter os itens do carrinho de um utilizador
     @SuppressLint("Range")
     public List<CartItem> getCartItems(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -683,6 +707,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return cartItems;
     }
 
+    // Método para obter o total do carrinho de um utilizador
     @SuppressLint("Range")
     public double getTotalCart(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -709,6 +734,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return total;
     }
 
+    // Método para limpar o carrinho de um utilizador
     public void clearCart(int userId) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(CART_TABLE, CART_USER_ID + " = ? AND " + CART_STATUS + " = ?",
@@ -716,6 +742,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Método para finalizar uma encomenda
     public void finishOrder(int userId, String paymentMethod) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -748,6 +775,7 @@ public class DBHandler extends SQLiteOpenHelper {
         }
     }
 
+    // Método para obter as encomendas de um utilizador
     @SuppressLint("Range")
     public List<Order> getOrdersByUserId(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -777,6 +805,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return orders;
     }
 
+    // Método para adicionar um registo de BMI à base de dados
     @SuppressLint("Recycle")
     public void addBmi(int userId, double weight, double height) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -807,6 +836,7 @@ public class DBHandler extends SQLiteOpenHelper {
         }
     }
 
+    // Método para obter o peso de um utilizador
     @SuppressLint("Range")
     public double getBmi(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -822,6 +852,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return 0;
     }
 
+    // Método para obter a altura de um utilizador
     @SuppressLint("Range")
     public double getBmi1(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -837,6 +868,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return 0;
     }
 
+    // Método para obter o plano de refeições de um utilizador
     public String getMealPlan(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
@@ -874,6 +906,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return mealPlan;
     }
 
+    // Método para atualizar o plano de refeições de um utilizador
     public void updateMealPlan(int userId, String mealPlan) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -882,6 +915,7 @@ public class DBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Método para atualizar o estado de uma encomenda
     public void updateOrderStatus(int orderId, String newStatus) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();

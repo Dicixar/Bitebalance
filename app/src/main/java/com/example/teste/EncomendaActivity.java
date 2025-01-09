@@ -30,16 +30,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+// Classe EncomendaActivity que gere a interface de encomendas
 public class EncomendaActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    private GoogleMap googleMap;
-    private ImageButton img1;
-    private DBHandler dbHandler;
-    private LinearLayout cartLayout;
-    private TextView total, carrinho;
-    private Button finalizar;
-    private Marker deliveryMarker;
-    private LatLng selectedLocation; // Armazena a localização selecionada
+    private GoogleMap googleMap; // Objeto para interagir com o Google Maps
+    private ImageButton img1; // Botão para voltar à atividade principal
+    private DBHandler dbHandler; // Instância da base de dados
+    private LinearLayout cartLayout; // Layout para exibir os itens do carrinho
+    private TextView total, carrinho; // TextViews para exibir o total e o título do carrinho
+    private Button finalizar; // Botão para finalizar a encomenda
+    private Marker deliveryMarker; // Marcador no mapa para o local de entrega
+    private LatLng selectedLocation; // Armazena a localização selecionada no mapa
 
     @SuppressLint({"MissingInflatedId", "SetTextI18n"})
     @Override
@@ -52,24 +53,29 @@ public class EncomendaActivity extends AppCompatActivity implements OnMapReadyCa
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(ContextCompat.getColor(this, R.color.green));
 
+        // Inicializa a base de dados
         dbHandler = new DBHandler(this);
         cartLayout = findViewById(R.id.product_list);
 
+        // Verifica se o utilizador está autenticado
         SharedPreferences sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("IS_LOGGED_IN", false);
 
         if (!isLoggedIn) {
+            // Redireciona para a atividade de login se o utilizador não estiver autenticado
             Intent intent = new Intent(EncomendaActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
         } else {
+            // Obtém o nome e email do utilizador autenticado
             String userName = sharedPreferences.getString("USER_NAME", "Guest");
             String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
-            displayCartItems(userEmail);
+            displayCartItems(userEmail); // Exibe os itens do carrinho
             total = findViewById(R.id.total);
-            total.setText("Total: €" + dbHandler.getTotalCart(dbHandler.getUserId(userEmail)));
+            total.setText("Total: €" + dbHandler.getTotalCart(dbHandler.getUserId(userEmail))); // Exibe o total do carrinho
         }
 
+        // Configura o botão de voltar
         img1 = findViewById(R.id.voltar);
         img1.setOnClickListener(view -> {
             Intent intent = new Intent(EncomendaActivity.this, MainActivity.class);
@@ -77,15 +83,17 @@ public class EncomendaActivity extends AppCompatActivity implements OnMapReadyCa
             finish();
         });
 
+        // Configura o botão para limpar o carrinho
         Button limpar = findViewById(R.id.limpar);
         limpar.setOnClickListener(view -> {
             String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
-            dbHandler.clearCart(dbHandler.getUserId(userEmail));
+            dbHandler.clearCart(dbHandler.getUserId(userEmail)); // Limpa o carrinho
             Intent intent = new Intent(EncomendaActivity.this, EncomendaActivity.class);
             startActivity(intent);
             finish();
         });
 
+        // Configura o botão para finalizar a encomenda
         finalizar = findViewById(R.id.btn_finalize_order);
         finalizar.setOnClickListener(view -> {
             String userEmail = sharedPreferences.getString("USER_EMAIL", "No email");
@@ -101,6 +109,7 @@ public class EncomendaActivity extends AppCompatActivity implements OnMapReadyCa
                             if (address != null) {
                                 Toast.makeText(EncomendaActivity.this, "Local de entrega: " + address, Toast.LENGTH_LONG).show();
 
+                                // Redireciona para a atividade de pagamento com o endereço de entrega
                                 Intent intent = new Intent(EncomendaActivity.this, PaymentActivity.class);
                                 intent.putExtra("DELIVERY_ADDRESS", address);
                                 startActivity(intent);
@@ -123,11 +132,12 @@ public class EncomendaActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
+    // Método para exibir os itens do carrinho
     @SuppressLint({"SetTextI18n", "WrongViewCast"})
     private void displayCartItems(String userEmail) {
         List<DBHandler.CartItem> cartItems = dbHandler.getCartItems(dbHandler.getUserId(userEmail));
 
-        cartLayout.removeAllViews();
+        cartLayout.removeAllViews(); // Limpa o layout antes de adicionar novos itens
 
         for (DBHandler.CartItem cartItem : cartItems) {
             View itemView = getLayoutInflater().inflate(R.layout.cart_item, cartLayout, false);
@@ -138,16 +148,19 @@ public class EncomendaActivity extends AppCompatActivity implements OnMapReadyCa
             mealName.setText(cartItem.getMeal().getName());
             mealPrice.setText("Quantidade: " + cartItem.getQuantity() + "   €" + cartItem.getTotalPrice());
 
-            cartLayout.addView(itemView);
+            cartLayout.addView(itemView); // Adiciona o item ao layout
         }
     }
 
+    // Método chamado quando o Google Maps está pronto para ser usado
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
 
-        LatLng startPoint = new LatLng(38.736946, -9.142685); // Coordenadas de Lisboa
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPoint, 15));
+        LatLng startPoint = new LatLng(38.736946, -9.142685);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPoint, 15)); // Define a localização inicial do mapa
 
+        // Adiciona um marcador no mapa para o local de entrega
         deliveryMarker = googleMap.addMarker(new MarkerOptions()
                 .position(startPoint)
                 .title("Ponto de Entrega")
@@ -156,6 +169,7 @@ public class EncomendaActivity extends AppCompatActivity implements OnMapReadyCa
         // Armazena a localização inicial como selecionada
         selectedLocation = startPoint;
 
+        // Configura o listener para quando o marcador é arrastado
         googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
             @Override
             public void onMarkerDragStart(Marker marker) {
@@ -167,7 +181,7 @@ public class EncomendaActivity extends AppCompatActivity implements OnMapReadyCa
 
             @Override
             public void onMarkerDragEnd(Marker marker) {
-                selectedLocation = marker.getPosition();
+                selectedLocation = marker.getPosition(); // Atualiza a localização selecionada
                 Toast.makeText(EncomendaActivity.this, "Local de entrega selecionado: " + selectedLocation.latitude + ", " + selectedLocation.longitude, Toast.LENGTH_SHORT).show();
             }
         });
@@ -200,6 +214,4 @@ public class EncomendaActivity extends AppCompatActivity implements OnMapReadyCa
     interface GeocodingCallback {
         void onAddressFetched(String address);
     }
-
-
 }

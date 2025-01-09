@@ -37,7 +37,7 @@
         <activity android:name=".PlanoActivity"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBMOwysulQePuQ3wX3S36VFAVxTQmFCHWM" />
+            android:value="AIzaSyDGHVGBVyaBTRjfcLo1Bv5Yck5mo_9a32U" />
     </application>
 
 </manifest>

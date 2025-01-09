@@ -11,7 +11,7 @@ import org.json.JSONObject;
 public class OpenAIHelper {
 
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
-    private static final String API_KEY = "";
+    private static final String API_KEY = "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";
 
     public interface Callback {
         void onSuccess(String response);

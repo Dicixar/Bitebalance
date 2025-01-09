@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         dbHandler = new DBHandler(this);
         List<DBHandler.Meal> meals = dbHandler.getMeals();
         for (DBHandler.Meal meal : meals) {
-            foodItems.add(new FoodItem(meal.getId(), meal.getName(), meal.getDescription(), meal.getPrice(), meal.getImage()));
+            foodItems.add(new FoodItem(meal.getId(), meal.getName(), meal.getDescription(), meal.getPrice(), meal.getImage(), meal.getCalories(), meal.getCarbohydrates(), meal.getProteins(), meal.getFats()));
             View itemView = getLayoutInflater().inflate(R.layout.item_food, foodcontainer, false);
             ImageView foodImage = itemView.findViewById(R.id.food_image);
             TextView foodName = itemView.findViewById(R.id.food_name);
